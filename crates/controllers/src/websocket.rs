@@ -98,7 +98,6 @@ pub fn connect(
     _ => !cfg.verbose()
   };
 
-  let _ = req.query_string().contains("t=binary");
   let handler = MessageHandler::new(ctx);
   let socket = ServerSocket { binary, handler };
   ws::start(socket, &req, stream)
