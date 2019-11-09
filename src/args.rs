@@ -1,7 +1,7 @@
 use clap::{App, Arg, ArgMatches, SubCommand};
 
 pub(crate) fn get_matches<'a>() -> ArgMatches<'a> {
-  App::new({{project-name}}_core::APPNAME)
+  App::new({{crate_name}}_core::APPNAME)
     .version("0.0.20")
     .author(clap::crate_authors!())
     .about("A work in progress")

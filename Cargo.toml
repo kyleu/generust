@@ -23,7 +23,7 @@ members = [
 
 [lib]
 crate-type = ["dylib", "staticlib", "rlib"]
-name = "{{project-name}}"
+name = "{{crate_name}}"
 
 [dependencies]
 actix-http = "0.2.11"

@@ -47,7 +47,7 @@ impl ClientContext {
     &self.socket
   }
 
-  pub(crate) fn profile(&self) -> &UserProfile {
+  pub(crate) fn _profile(&self) -> &UserProfile {
     &self.profile
   }
 

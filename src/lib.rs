@@ -63,7 +63,7 @@ pub mod android {
 
   #[no_mangle]
   #[allow(unsafe_code)]
-  pub unsafe extern "C" fn Java_com_{{project-name}}_{{crate_name}}_{{crate_name}}_go(env: JNIEnv<'_>, _: JClass<'_>) {
+  pub unsafe extern "C" fn Java_com_{{crate_name}}_{{crate_name}}_{{crate_name}}_go(env: JNIEnv<'_>, _: JClass<'_>) {
     println!("Android!");
     go();
   }
