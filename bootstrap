@@ -5,7 +5,11 @@ cd $dir
 
 echo "=== Cloning UIKit ==="
 cd crates/assets/stylesheets
-git submodule add --depth 1 -- https://github.com/uikit/uikit.git
+if [ -d "./uikit" ]; then
+  echo "UIKit directory exists"
+else
+  git submodule add --depth 1 -- https://github.com/uikit/uikit.git
+fi
 cd ../../..
 
 bin/check
