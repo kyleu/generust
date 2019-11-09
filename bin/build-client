@@ -1,0 +1,28 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+cd crates/client
+wasm-pack build
+
+cd www
+npm install
+rm -rf dist
+npm run build
+
+cd dist
+
+for file in *.wasm; do
+  echo "###: ${file%.module.wasm}"
+  sed -i "" "s/${file%.module.wasm}/{{project-name}}/g" bootstrap.js
+
+  mv "$file" "{{project-name}}.module.wasm"
+done
+
+mkdir -p ../../../assets/embed/wasm/
+cp {{project-name}}.module.wasm ../../../assets/embed/wasm/
+
+cat 0.bootstrap.js bootstrap.js > client.js
+cp client.js ../../../assets/embed

@@ -1,0 +1,17 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+bin/build-css
+
+bin/format
+bin/build-client
+
+bin/check
+
+bin/build-mac
+bin/build-linux
+bin/build-windows
+bin/build-docker

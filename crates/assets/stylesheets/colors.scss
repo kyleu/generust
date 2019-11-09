@@ -1,0 +1,159 @@
+$dark-bg-color: #121212;
+$light-bg-color: #fff;
+
+$clear: $light-bg-color;
+$clear-dark: $dark-bg-color;
+
+$grey: #dddddd;
+$grey-dark: #2c3531;
+
+$bluegrey: #89b6cc;
+$bluegrey-dark: #263238;
+$bluegrey_text: #546e7a;
+
+$red: #c1301c;
+$red-dark: #44110a;
+
+$orange: #c96112;
+$orange-dark: #462206;
+
+$yellow: #c4a705;
+$yellow-dark: #453a02;
+
+$green: #177245;
+$green-dark: #072918;
+
+$blue: #397adb;
+$blue-dark: #101e33;
+
+$purple: #b768a2;
+$purple-dark: #1a0e2d;
+
+$x: #000000;
+$x-dark: #000000;
+
+.uk-dark {
+  .clear-fg {
+    color: $clear_dark;
+  }
+  .clear-bg {
+    background: $clear !important;
+  }
+  .grey-fg {
+    color: $grey_dark;
+  }
+  .grey-bg {
+    background: $grey !important;
+  }
+  .bluegrey-fg {
+    color: $bluegrey_text;
+  }
+  .bluegrey-bg {
+    background: $bluegrey !important;
+  }
+  .red-fg {
+    color: $red;
+  }
+  .red-bg {
+    background: $red !important;
+  }
+  .orange-fg {
+    color: $orange;
+  }
+  .orange-bg {
+    background: $orange !important;
+  }
+  .yellow-fg {
+    color: $yellow;
+  }
+  .yellow-bg {
+    background: $yellow !important;
+  }
+  .green-fg {
+    color: $green;
+  }
+  .green-bg {
+    background: $green !important;
+  }
+  .blue-fg {
+    color: $blue;
+  }
+  .blue-bg {
+    background: $blue !important;
+  }
+  .purple-fg {
+    color: $purple;
+  }
+  .purple-bg {
+    background: $purple !important;
+  }
+  .x-fg {
+    color: $x;
+  }
+  .x-bg {
+    background: $x !important;
+  }
+}
+
+.uk-light {
+  .clear-fg {
+    color: $clear;
+  }
+  .clear-bg {
+    background: $clear_dark !important;
+  }
+  .grey-fg {
+    color: $grey;
+  }
+  .grey-bg {
+    background: $grey_dark !important;
+  }
+  .bluegrey-fg {
+    color: $bluegrey;
+  }
+  .bluegrey-bg {
+    background: $bluegrey_dark !important;
+  }
+  .red-fg {
+    color: $red;
+  }
+  .red-bg {
+    background: $red_dark !important;
+  }
+  .orange-fg {
+    color: $orange;
+  }
+  .orange-bg {
+    background: $orange_dark !important;
+  }
+  .yellow-fg {
+    color: $yellow;
+  }
+  .yellow-bg {
+    background: $yellow_dark !important;
+  }
+  .green-fg {
+    color: $green;
+  }
+  .green-bg {
+    background: $green_dark !important;
+  }
+  .blue-fg {
+    color: $blue;
+  }
+  .blue-bg {
+    background: $blue_dark !important;
+  }
+  .purple-fg {
+    color: $purple;
+  }
+  .purple-bg {
+    background: $purple_dark !important;
+  }
+  .x-fg {
+    color: $x;
+  }
+  .x-bg {
+    background: $x_dark !important;
+  }
+}

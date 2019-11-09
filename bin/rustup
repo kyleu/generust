@@ -1,0 +1,20 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+rustup self update
+rustup update
+rustup toolchain install nightly
+rustup default nightly
+
+rustup target add x86_64-apple-darwin
+
+rustup target add x86_64-unknown-linux-musl
+rustup target add x86_64-unknown-linux-gnu
+
+rustup target add x86_64-pc-windows-gnu
+cp /usr/local/Cellar/mingw-w64/6.0.0_2/toolchain-x86_64/x86_64-w64-mingw32/lib/{crt2.o,dllcrt2.o,libmsvcrt.a} ~/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/x86_64-pc-windows-gnu/lib/
+
+rustup component add clippy

@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+# cargo clean -p {{project-name}}
+RUST_BACKTRACE=1 cargo watch --ignore=bin --ignore=crates/client --ignore=crates/assets/embed --ignore=doc --ignore=log/{{project-name}}.log --ignore=project --ignore=stylesheets -x 'run -- server'

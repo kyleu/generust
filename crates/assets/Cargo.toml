@@ -1,0 +1,12 @@
+[package]
+name = "{{project-name}}-assets"
+version = "0.0.1"
+authors = ["{{authors}}"]
+edition = "2018"
+description = "Embedded web assets for {{project-name}}"
+homepage = "https://estimate.poker"
+repository = "https://github.com/{{project-name}}/{{project-name}}"
+license = "MIT"
+
+[dependencies]
+rust-embed = { version = "5.1.0", features = ["interpolate-folder-path"] }

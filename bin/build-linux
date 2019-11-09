@@ -1,0 +1,15 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+TARGET_CC=x86_64-linux-musl-gcc cargo build --release --target x86_64-unknown-linux-musl
+unset TARGET_CC
+
+mkdir -p build/linux
+cp target/x86_64-unknown-linux-musl/release/{{project-name}} build/linux/{{project-name}}
+
+cp target/x86_64-unknown-linux-musl/release/{{project-name}} ../{{project-name}}.com/bin/apps/{{project-name}}/{{project-name}}
+
+gzip -f build/linux/{{project-name}} --keep

@@ -1,0 +1,21 @@
+[package]
+name = "{{project-name}}-core"
+version = "0.0.1"
+authors = ["{{authors}}"]
+edition = "2018"
+description = "Core classes used by {{project-name}} in the app and WASM"
+keywords = ["test", "noop", "pointless"]
+homepage = "https://estimate.poker"
+repository = "https://github.com/{{project-name}}/{{project-name}}"
+license = "MIT"
+build = "build.rs"
+
+[build-dependencies]
+built = "0.3.2"
+
+[dependencies]
+bincode = "1.2.0"
+error-chain = "0.12.1"
+serde = { version = "1.0.102", features = ["derive"] }
+serde_json = "1.0.41"
+uuid = { version = "0.7.4", features = ["serde", "v4"] }

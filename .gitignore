@@ -1,0 +1,10 @@
+.idea
+.history
+
+/build
+/log
+/target
+
+/project/android/NDK
+
+xcuserdata/

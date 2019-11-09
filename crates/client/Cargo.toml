@@ -1,0 +1,56 @@
+[package]
+name = "{{project-name}}-client"
+version = "0.0.1"
+authors = ["{{authors}}"]
+edition = "2018"
+description = "WASM web client sources for {{project-name}}"
+readme = "README.md"
+categories = ["wasm", "web-programming", "web-programming::websocket"]
+homepage = "https://estimate.poker"
+repository = "https://github.com/{{project-name}}/{{project-name}}"
+license = "MIT"
+exclude = [".gitignore", ".travis.yml", "appveyor.yml"]
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+[dependencies]
+{{project-name}}-core = { version = "0.0.1", path = "../core" }
+
+console_error_panic_hook = "0.1.6"
+instant = "0.1.2"
+js-sys = "0.3.29"
+maud = "0.21.0"
+uuid = { version = "0.7.4", features = ["serde", "v4", "wasm-bindgen"] }
+wasm-bindgen = { version = "0.2.52", features = ["nightly"] }
+wasm-bindgen-futures = "0.4.2"
+web-sys = { version = "0.3.29", features = [
+  "BinaryType",
+  "Blob",
+  "console",
+  "CssStyleDeclaration",
+  "Document",
+  "DomStringMap",
+  "DomTokenList",
+  "Element",
+  "ErrorEvent",
+  "Event",
+  "EventTarget",
+  "FileReader",
+  "FileReaderSync",
+  "HtmlBodyElement",
+  "HtmlElement",
+  "HtmlInputElement",
+  "HtmlTextAreaElement",
+  "KeyboardEvent",
+  "Location",
+  "MessageEvent",
+  "Node",
+  "NodeList",
+  "Storage",
+  "WebSocket",
+  "Window"
+] }
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.2"

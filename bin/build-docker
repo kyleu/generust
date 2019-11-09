@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+docker build -m 4g -t {{project-name}}/{{project-name}} .
+
+mkdir -p build/docker
+docker save -o build/docker/docker.tar {{project-name}}/{{project-name}}
+cd build/docker/
+rm -f docker.tar.gz
+gzip docker.tar

@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+bin/build-css
+bin/build-client
+cargo build --release
+cargo bloat --release -n 10
+RUST_BACKTRACE=1 target/release/{{project-name}}

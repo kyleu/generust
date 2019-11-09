@@ -1,0 +1,66 @@
+rustup self update
+rustup update
+rustup toolchain install nightly
+rustup default nightly
+rustup update
+
+# Components
+rustup component add rust-src rust-analysis
+cargo install cargo-audit
+cargo install cargo-bloat
+cargo install cargo-cache
+cargo install cargo-check
+cargo install cargo-count
+cargo install cargo-deps
+cargo install cargo-lipo
+cargo install cargo-modules
+cargo install cargo-outdated
+cargo install cargo-real-deps
+cargo install cargo-release
+cargo install cargo-tomlfmt
+cargo install cargo-tree
+cargo install cargo-udeps
+cargo install cargo-update
+cargo install cargo-urlcrate
+cargo install cargo-watch
+cargo install cbindgen
+cargo install clippy
+cargo install cross
+cargo install rustfmt
+cargo install sccache
+cargo install cargo-rpm
+
+https://github.com/rust-analyzer/rust-analyzer
+
+# Apple
+rustup target add aarch64-apple-ios armv7-apple-ios armv7s-apple-ios x86_64-apple-ios
+
+# Linux
+rustup target add x86_64-unknown-linux-musl
+
+# Windows
+rustup target add x86_64-pc-windows-gnu
+
+# Android
+rustup target add x86_64-linux-android aarch64-linux-android armv7-linux-androideabi i686-linux-android
+rustup toolchain install stable-x86_64-linux-android
+
+export ANDROID_HOME=/Users/$USER/Library/Android/sdk
+export NDK_HOME=$ANDROID_HOME/ndk-bundle
+mkdir NDK
+${NDK_HOME}/build/tools/make_standalone_toolchain.py --api 26 --arch arm64 --install-dir NDK/arm64
+${NDK_HOME}/build/tools/make_standalone_toolchain.py --api 26 --arch arm --install-dir NDK/arm
+${NDK_HOME}/build/tools/make_standalone_toolchain.py --api 26 --arch x86 --install-dir NDK/x86
+
+# Cross
+brew install FiloSottile/musl-cross/musl-cross --with-arm-hf --with-i486 --with-aarch64 --with-arm --with-mips
+
+brew install mingw-w64
+cp /usr/local/Cellar/mingw-w64/6.0.0_2/toolchain-x86_64/x86_64-w64-mingw32/lib/{crt2.o,dllcrt2.o,libmsvcrt.a} ~/.rustup/toolchains/stable-x86_64-apple-darwin/lib/rustlib/x86_64-pc-windows-gnu/lib/
+
+# ~/.cargo/config
+[target.x86_64-unknown-linux-musl]
+linker = "x86_64-linux-musl-gcc"
+
+[target.x86_64-pc-windows-gnu]
+linker = 'x86_64-w64-mingw32-gcc'

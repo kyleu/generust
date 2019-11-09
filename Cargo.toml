@@ -1,0 +1,82 @@
+[package]
+name = "{{project-name}}"
+version = "0.0.1"
+authors = ["{{authors}}"]
+edition = "2018"
+description = "A planning poker app, mostly developed to learn Rust"
+readme = "README.md"
+categories = ["development-tools", "web-programming", "web-programming::http-server"]
+keywords = ["{{project-name}}", "estimate", "poker", "scrum", "agile", "planning"]
+homepage = "https://estimate.poker"
+repository = "https://github.com/{{project-name}}/{{project-name}}"
+license = "MIT"
+exclude = [".gitignore", ".travis.yml", "appveyor.yml"]
+
+[workspace]
+members = [
+  "crates/assets",
+  "crates/client",
+  "crates/core",
+  "crates/controllers",
+  "crates/templates"
+]
+
+[lib]
+crate-type = ["dylib", "staticlib", "rlib"]
+name = "{{project-name}}"
+
+[dependencies]
+actix-http = "0.2.11"
+actix-rt = "0.2.5"
+actix-server = "0.7.0"
+actix-service = "0.4.2"
+actix-session = "0.2.0"
+actix-utils = "0.4.7"
+actix-web = "1.0.8"
+actix-web-codegen = "0.1.3"
+app_dirs2 = "2.0.4"
+arrayvec = "0.5.1"
+bincode = "1.2.0"
+bitflags = "1.2.1"
+clap = "2.33.0"
+{{project-name}}-controllers = { version = "0.0.1", path = "crates/controllers" }
+{{project-name}}-core = { version = "0.0.1", path = "crates/core" }
+{{project-name}}-service = { version = "0.0.1", path = "crates/service" }
+{{project-name}}-templates = { version = "0.0.1", path = "crates/templates" }
+failure = "0.1.6"
+flate2 = "1.0.12"
+futures = "0.1.29"
+http = "0.1.19"
+iovec = "0.1.4"
+libc = "0.2.65"
+nodrop = "0.1.14"
+ryu = "1.0.2"
+serde_json = "1.0.41"
+slog = { version = "2.5.2", features = ["max_level_trace", "release_max_level_trace"] }
+slog-async = "2.3.0"
+slog-json = "2.3.0"
+slog-term = "2.4.2"
+tokio-reactor = "0.1.10"
+tokio-sync = "0.1.7"
+
+[target.'cfg(any(target_os = "macos", target_os = "linux", target_os = "windows"))'.dependencies]
+web-view = { version = "0.5.3" }
+
+[target.'cfg(target_os="android")'.dependencies]
+jni = { version = "0.14.0", default-features = false }
+
+[profile.release]
+lto = true
+
+[badges]
+appveyor = { repository = "{{project-name}}/{{project-name}}" }
+is-it-maintained-issue-resolution = { repository = "{{project-name}}/{{project-name}}" }
+is-it-maintained-open-issues = { repository = "{{project-name}}/{{project-name}}" }
+maintenance = { status = "actively-developed" }
+travis-ci = { repository = "{{project-name}}/{{project-name}}" }
+
+[package.metadata.rpm]
+buildflags = ["--release"]
+
+[package.metadata.rpm.targets]
+{{project-name}} = { path = "/usr/bin/{{project-name}}" }

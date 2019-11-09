@@ -1,0 +1,11 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+cargo build --release --target=x86_64-pc-windows-gnu
+
+mkdir -p build/windows
+cp target/x86_64-pc-windows-gnu/release/{{project-name}}.exe build/windows/{{project-name}}.exe
+zip build/windows/{{project-name}}.zip build/windows/{{project-name}}.exe

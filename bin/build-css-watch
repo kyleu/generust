@@ -1,0 +1,9 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+bin/build-css
+echo "Watching sass compilation for [crates/assets/stylesheets/style.scss]..."
+sass --watch --no-source-map --load-path=../../Libraries crates/assets/stylesheets/style.scss crates/assets/embed/vendor/style.css

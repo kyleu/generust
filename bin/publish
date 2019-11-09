@@ -1,0 +1,43 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+v="$(cargo pkgid -p {{project-name}} | cut -d# -f2 | cut -d: -f2)"
+
+echo "Publishing $v"
+
+read -p "Press enter to continue"
+
+./bin/build-css
+./bin/check
+
+git add .
+git commit -m "v$v" || :
+
+echo "=== core ==="
+cargo publish --manifest-path crates/core/Cargo.toml
+echo "Waiting for core to settle..."
+sleep 15s
+echo "=== assets ==="
+cargo publish --manifest-path crates/assets/Cargo.toml
+echo "=== service ==="
+cargo publish --manifest-path crates/service/Cargo.toml
+echo "=== client ==="
+cargo publish --manifest-path crates/client/Cargo.toml
+echo "=== templates ==="
+cargo publish --manifest-path crates/templates/Cargo.toml
+echo "Waiting for templates to settle..."
+sleep 15s
+echo "=== controllers ==="
+cargo publish --manifest-path crates/controllers/Cargo.toml
+echo "Waiting for controllers to settle..."
+sleep 15s
+echo "=== {{project-name}} ==="
+cargo publish
+
+echo "=== git ==="
+git tag -a "v$v" -m ""
+git push
+git push origin "v$v"

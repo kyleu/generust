@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+sudo cargo flamegraph --bin {{project-name}} --output target/flamegraph.svg -- --help
+
+cargo build
+cargo clean -p {{project-name}}
+sudo flamegraph -o target/flamegraph-build.svg "cargo build"
+
+sudo chown -R {{project-name}} target

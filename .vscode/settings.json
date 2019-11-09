@@ -1,0 +1,6 @@
+{
+  "search.exclude": {
+    "crates/assets/embed/vendor": true,
+    "crates/assets/stylesheets/uikit": true
+  }
+}

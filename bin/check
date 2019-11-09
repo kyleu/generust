@@ -1,0 +1,43 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+f () {
+  echo "=== $1 ==="
+  cargo clean -p "{{project-name}}-$1"
+  cd "crates/$1"
+  cargo count --separator , --unsafe-statistics src
+  cd ../..
+}
+
+bin/format
+
+f "core"
+f "client"
+f "assets"
+f "controllers"
+f "service"
+f "templates"
+
+echo "=== {{project-name}} ==="
+cargo clean -p {{project-name}}
+cd "src"
+cargo count --separator , --unsafe-statistics
+cd ..
+
+echo "=== (total) ==="
+cargo count --separator , --unsafe-statistics -a --exclude=$(cat .gitignore) --exclude=target --exclude=project --exclude=crates/assets/embed --exclude=crates/assets/stylesheets/uikit --exclude=crates/client/pkg --exclude=crates/client/www
+cargo deps --depth 1 --include-versions --dev-deps | dot -Tpng > "target/dependencies.png"
+
+echo "=== Dependencies ==="
+# cargo outdated --depth=1 -w
+cargo outdated --depth=1
+echo "=== Advisories ==="
+cargo audit
+
+echo "=== Linting ==="
+cargo clippy
+cd crates/client
+cargo clippy

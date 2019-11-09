@@ -1,0 +1,8 @@
+#!/bin/bash
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+sass --no-source-map crates/assets/stylesheets/style.scss crates/assets/embed/vendor/style.css
+sass --style=compressed --no-source-map crates/assets/stylesheets/style.scss crates/assets/embed/vendor/style.min.css

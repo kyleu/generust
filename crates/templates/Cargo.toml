@@ -1,0 +1,19 @@
+[package]
+name = "{{project-name}}-templates"
+version = "0.0.1"
+authors = ["{{authors}}"]
+edition = "2018"
+description = "HTML templates used by the {{project-name}} server"
+keywords = ["test", "noop", "pointless"]
+homepage = "https://estimate.poker"
+repository = "https://github.com/{{project-name}}/{{project-name}}"
+license = "MIT"
+
+[dependencies]
+{{project-name}}-core = { version = "0.0.1", path = "../core" }
+{{project-name}}-service = { version = "0.0.1", path = "../service" }
+
+backtrace = "0.3.40"
+maud = "0.21.0"
+num_cpus = "1.10.1"
+serde = { version = "1.0.102", features = ["derive"] }

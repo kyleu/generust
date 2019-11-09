@@ -1,0 +1,112 @@
+$navbar-nav-item-height: 54px;
+
+@import "uikit/src/scss/variables-theme.scss";
+@import "uikit/src/scss/mixins-theme.scss";
+
+@mixin hook-card() { color: #000; }
+
+@import "components.scss";
+@import "colors.scss";
+
+@import "overrides.scss";
+
+// Common
+.right {
+  float: right;
+}
+.left {
+  float: left;
+}
+
+h4 {
+	margin-top: none;
+}
+
+// Content
+#content {
+	padding: 0;
+}
+.uk-light #content {
+	background-color: $dark_bg_color;
+}
+.uk-dark #content {
+	background-color: #fff;
+}
+
+// Sidebar
+.sidebar-left {
+	position: fixed;
+	top: 54px;
+	bottom: 0;
+	box-sizing: border-box;
+	width: 240px !important;
+	padding: 40px;
+	overflow: auto;
+	.status-panel {
+		position: fixed;
+		bottom: 40px;
+	}
+}
+
+.sidebar-left + #content {
+	padding-left: 240px;
+}
+
+.uk-light .sidebar-left {
+	border-right: 1px #444 solid;
+	background-color: $dark_bg_color;
+}
+.uk-dark .sidebar-left {
+	border-right: 1px #e5e5e5 solid;
+	background-color: $light_bg_color;
+}
+
+
+// Backtrace
+.frame {
+	border-top: 1px solid #ddd;
+	padding: 12px;
+	&.owned {
+		.message {
+			color: green;
+		}
+	}
+	.loc, .additional {
+		margin-left: 32px;
+		color: #999;
+	}
+}
+
+// Profile
+.swatch {
+	width: 32px;
+	height: 32px;
+	margin: 0 4px;
+	cursor: pointer;
+	display: inline-block;
+	border: 1px solid #444;
+	color: #fff;
+	&.light {
+		border: 1px solid #ddd;
+		color: #000;
+	}
+	&.active {
+		.icon {
+			color: inherit;
+		}
+	}
+	.icon {
+		margin-top: 6px;
+		color: transparent;
+	}
+}
+
+// Alerts
+.alert-top {
+	margin: 12px;
+}
+
+// Resultset
+.resultset {
+	overflow: auto;
+}
