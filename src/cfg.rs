@@ -1,6 +1,6 @@
 use {{crate_name}}_service::AppConfig;
 
-const DEFAULT_PORT: u16 = 5500;
+const DEFAULT_PORT: u16 = 5050;
 
 #[cfg(debug_assertions)]
 fn is_debug() -> bool {

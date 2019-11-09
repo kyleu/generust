@@ -35,7 +35,7 @@ pub(crate) fn get_matches<'a>() -> ArgMatches<'a> {
             .short("p")
             .long("port")
             .value_name("PORT_NUM")
-            .help("Configures the server to use the provided port (defaults to 5500)")
+            .help(&format!("Configures the server to use the provided port (defaults to {})", crate::cfg::DEFAULT_PORT))
             .takes_value(true)
         )
     )

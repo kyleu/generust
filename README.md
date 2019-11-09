@@ -4,13 +4,18 @@
 
 ## A Rust project template for dynamic web applications
 
-`Generust` is a `cargo-generate` template that provides a Rust web server and WASM client with some [interesting features](doc/features.md).
+`Generust` is a [cargo-generate](https://github.com/ashleygwilliams/cargo-generate) template that provides a Rust web server and WASM client with some [interesting features](doc/features.md).
 
 It uses [actix-web](https://actix.rs), [maud](https://maud.lambda.xyz), [UIKit](https://getuikit.com), and [wasm-bindgen](https://github.com/rustwasm/wasm-bindgen) to serve your app as a server or webview, via HTTP and WebSockets.
 
+## Example Projects
+
+[generust-example-project](https://github.com/kyleu/generust-example-project) - Basically just the result of running this template
+
 ## Use `cargo generate` to clone this template and make it your own
 
-```cargo install cargo-generate
+```script
+cargo install cargo-generate
 cargo generate --git https://github.com/kyleu/generust.git --name my-project
 cd my-project
 ./bootstrap
@@ -19,12 +24,6 @@ cd my-project
 This will package the WASM client, compile the UIKit SCSS, and build the main application.
 You can execute `cargo run` to start the server and open a system webview pointing to it, or run `{{project-name}} -h` to see the CLI options.
 [Scripts](doc/scripts.md) are provided in `./bin` that will help you build and publish the app.
-
-## Example Projects
-
-[generust-example-project](https://github.com/kyleu/generust-example-project) - Basically just the result of running this template
-[rustimate](https://github.com/kyleu/rustimate) - Planning Poker application, using the filesystem for storage
-[dbui](https://github.com/kyleu/dbui) - A toy project for accessing postgres databases
 
 Good luck!
 

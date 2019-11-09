@@ -34,7 +34,7 @@ impl Frame {
           id if id.ends_with(':') => {
             let n = id.get(..(id.len() - 1)).map(|i| i.parse::<i32>().unwrap()).unwrap();
             let ret = if n != 0 {
-              let owned = curr_message.starts_with({{crate_name}}_core::APPNAME);
+              let owned = curr_message.starts_with("{{crate_name}}");
               vec![Frame {
                 id: curr_id,
                 message: curr_message.clone(),
