@@ -39,5 +39,6 @@ cargo audit
 
 echo "=== Linting ==="
 cargo clippy
+echo "=== Linting Client ==="
 cd crates/client
 cargo clippy

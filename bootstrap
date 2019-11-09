@@ -3,10 +3,6 @@ set -e
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 cd $dir
 
-echo "=== Initializing git repo ==="
-rm -rf .git
-git init
-
 echo "=== Cloning UIKit ==="
 cd crates/assets/stylesheets
 git submodule add --depth 1 -- https://github.com/uikit/uikit.git
