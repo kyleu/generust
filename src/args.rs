@@ -4,7 +4,7 @@ pub(crate) fn get_matches<'a>() -> ArgMatches<'a> {
   App::new({{crate_name}}_core::APPNAME)
     .version("0.0.20")
     .author(clap::crate_authors!())
-    .about("A work in progress")
+    .about("Starts the HTTP server and (optionally) opens a webview")
     .arg(
       Arg::with_name("config")
         .short("c")

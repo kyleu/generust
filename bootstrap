@@ -22,4 +22,4 @@ echo "=== Success! ==="
 cargo build
 
 echo "=== Running Your App! ==="
-cargo run -- --help
+cargo run -- server
