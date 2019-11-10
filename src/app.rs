@@ -1,6 +1,6 @@
 use crate::server::start_server;
 
-#[cfg(any(target_os = "macos", target_os = "linux", target_os = "windows"))]
+#[cfg(any(target_os = "macos", target_os = "windows"))]
 pub(crate) fn start(cfg: {{crate_name}}_service::AppConfig) -> {{crate_name}}_core::Result<()> {
   let (port_tx, port_rx) = std::sync::mpsc::channel();
   match cfg.task().as_ref() {
@@ -21,7 +21,7 @@ pub(crate) fn start(cfg: {{crate_name}}_service::AppConfig) -> {{crate_name}}_co
   }
 }
 
-#[cfg(not(any(target_os = "macos", target_os = "linux", target_os = "windows")))]
+#[cfg(not(any(target_os = "macos", target_os = "windows")))]
 pub(crate) fn start(cfg: {{crate_name}}_service::AppConfig) -> {{crate_name}}_core::Result<()> {
   let (port_tx, _) = std::sync::mpsc::channel();
   start_server(cfg, port_tx)

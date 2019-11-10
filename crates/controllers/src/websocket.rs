@@ -16,7 +16,14 @@ impl Actor for ServerSocket {
   type Context = ws::WebsocketContext<Self>;
 
   fn started(&mut self, wsc: &mut Self::Context) {
-    for msg in self.handler.on_open() {
+    let msgs = match self.handler.on_open() {
+      Ok(m) => m,
+      Err(e) => {
+        slog::error!(self.handler.log(), "Unable to process on_open: {}", e);
+        vec!()
+      }
+    };
+    for msg in msgs {
       match self.send(msg, wsc) {
         Ok(_) => (),
         Err(e) => slog::warn!(self.handler.log(), "Unable to send initial open messages: {}", e)

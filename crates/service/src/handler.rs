@@ -14,11 +14,11 @@ impl MessageHandler {
     MessageHandler { ctx, log }
   }
 
-  pub fn on_open(&self) -> Vec<ResponseMessage> {
-    vec![ResponseMessage::Hello {
+  pub fn on_open(&self) -> Result<Vec<ResponseMessage>> {
+    Ok(vec![ResponseMessage::Hello {
       u: Box::new((*self.ctx.user_profile()).clone()),
       b: !self.ctx.app().verbose()
-    }]
+    }])
   }
 
   pub fn on_closed(&self) -> Vec<ResponseMessage> {
