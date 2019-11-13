@@ -24,11 +24,15 @@ impl Actor for ServerSocket {
       }
     };
     for msg in msgs {
-      match self.send(msg, wsc) {
+      match self.send(&msg, wsc) {
         Ok(_) => (),
         Err(e) => slog::warn!(self.handler.log(), "Unable to send initial open messages: {}", e)
       }
     }
+  }
+
+  fn stopping(&mut self, _ctx: &mut Self::Context) -> actix::Running {
+    actix::Running::Stop
   }
 }
 
@@ -50,7 +54,7 @@ impl ServerSocket {
 
   fn handle_message(&self, req: RequestMessage, wsc: &mut ws::WebsocketContext<Self>) -> Result<()> {
     for msg in self.handler.on_message(req)? {
-      self.send(msg, wsc)?;
+      self.send(&msg, wsc)?;
     }
     Ok(())
   }
@@ -61,13 +65,13 @@ impl ServerSocket {
       reason: format!("{}", e),
       content: "Error handling message".into()
     };
-    match self.send(msg, wsc) {
+    match self.send(&msg, wsc) {
       Ok(_) => (),
       Err(e) => slog::warn!(&self.handler().log(), "Error sending server error message: {}", e)
     }
   }
 
-  fn send(&self, rsp: ResponseMessage, wsc: &mut ws::WebsocketContext<Self>) -> Result<()> {
+  fn send(&self, rsp: &ResponseMessage, wsc: &mut ws::WebsocketContext<Self>) -> Result<()> {
     if self.binary {
       wsc.binary(rsp.to_binary()?);
     } else {
@@ -105,7 +109,8 @@ pub fn connect(
     _ => !cfg.verbose()
   };
 
-  let handler = MessageHandler::new(ctx);
+  let id = uuid::Uuid::new_v4();
+  let handler = MessageHandler::new(id, ctx);
   let socket = ServerSocket { binary, handler };
   ws::start(socket, &req, stream)
 }

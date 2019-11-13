@@ -12,7 +12,7 @@ impl MessageHandler {
   pub(crate) fn handle(ctx: &RwLock<ClientContext>, msg: ResponseMessage) -> Result<()> {
     debug!("Message received: {:?}", msg);
     match msg {
-      ResponseMessage::Hello { u, b } => on_hello(ctx, &u, b)?,
+      ResponseMessage::Hello { session_id, u, b } => on_hello(ctx, session_id, &u, b)?,
       ResponseMessage::Pong { v } => on_pong(ctx, v)?,
       _ => warn!("Unhandled ResponseMessage [{:?}]", msg)
     };
@@ -20,8 +20,8 @@ impl MessageHandler {
   }
 }
 
-fn on_hello(ctx: &RwLock<ClientContext>, u: &UserProfile, b: bool) -> Result<()> {
-  ctx.write().unwrap().on_hello(b, u.clone());
+fn on_hello(ctx: &RwLock<ClientContext>, session_id: uuid::Uuid, u: &UserProfile, b: bool) -> Result<()> {
+  ctx.write().unwrap().on_hello(session_id, u.clone(), b);
   let c = ctx.read().unwrap();
   let _ = c.append_template(
     "socket-results",

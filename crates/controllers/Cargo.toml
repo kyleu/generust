@@ -22,6 +22,7 @@ actix-web = "1.0.8"
 actix-web-actors = "1.0.2"
 bytes = "0.4.12"
 chrono = { version = "0.4.9", features = ["serde"] }
+derive_more = "0.99.0"
 futures = "0.1.29"
 maud = "0.21.0"
 mime = "0.3.14"

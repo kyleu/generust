@@ -59,7 +59,7 @@ impl Theme {
 }
 
 /// User preferences
-#[derive(Clone, Debug, Deserialize, Serialize)]
+#[derive(Clone, derive_more::Constructor, Debug, Deserialize, Serialize)]
 pub struct UserProfile {
   name: String,
   theme: Theme,
@@ -79,15 +79,6 @@ impl Default for UserProfile {
 }
 
 impl UserProfile {
-  pub fn new(name: String, theme: Theme, nav_color: String, link_color: String) -> UserProfile {
-    UserProfile {
-      name,
-      theme,
-      nav_color,
-      link_color
-    }
-  }
-
   pub fn name(&self) -> &String {
     &self.name
   }

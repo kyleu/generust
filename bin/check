@@ -5,10 +5,12 @@ project_dir=${dir}/..
 cd $project_dir
 
 f () {
-  echo "=== $1 ==="
+  echo "=== $1 counts ==="
   cargo clean -p "{{project-name}}-$1"
   cd "crates/$1"
   cargo count --separator , --unsafe-statistics src
+  echo "=== $1 dependencies ==="
+  cargo outdated --depth=1
   cd ../..
 }
 
@@ -21,19 +23,18 @@ f "controllers"
 f "service"
 f "templates"
 
-echo "=== {{project-name}} ==="
+echo "=== {{project-name}} counts ==="
 cargo clean -p {{project-name}}
 cd "src"
 cargo count --separator , --unsafe-statistics
+echo "=== {{project-name}} dependencies ==="
+cargo outdated --depth=1
 cd ..
 
 echo "=== (total) ==="
 cargo count --separator , --unsafe-statistics -a --exclude=$(cat .gitignore) --exclude=target --exclude=project --exclude=crates/assets/embed --exclude=crates/assets/stylesheets/uikit --exclude=crates/client/pkg --exclude=crates/client/www
 cargo deps --depth 1 --include-versions --dev-deps | dot -Tpng > "target/dependencies.png"
 
-echo "=== Dependencies ==="
-# cargo outdated --depth=1 -w
-cargo outdated --depth=1
 echo "=== Advisories ==="
 cargo audit
 

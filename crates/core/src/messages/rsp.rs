@@ -1,12 +1,14 @@
 use crate::{Error, Result};
 
 use serde::{Deserialize, Serialize};
+use uuid::Uuid;
 
 /// Sent from server to client, this shared model is used for all client communication
 #[allow(variant_size_differences)]
 #[derive(Debug, Serialize, Deserialize)]
 pub enum ResponseMessage {
   Hello {
+    session_id: Uuid,
     u: Box<crate::profile::UserProfile>,
     b: bool
   },

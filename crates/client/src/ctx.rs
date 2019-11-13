@@ -11,6 +11,7 @@ pub(crate) struct ClientContext {
   window: Window,
   document: Document,
   socket: ClientSocket,
+  session_id: Option<uuid::Uuid>,
   profile: UserProfile
 }
 
@@ -28,6 +29,7 @@ impl ClientContext {
       window,
       document,
       socket,
+      session_id: None,
       profile
     }));
 
@@ -52,8 +54,9 @@ impl ClientContext {
     &self.profile
   }
 
-  pub(crate) fn on_hello(&mut self, binary: bool, profile: UserProfile) {
+  pub(crate) fn on_hello(&mut self, session_id: uuid::Uuid, profile: UserProfile, binary: bool) {
     self.socket.set_binary(binary);
+    self.session_id = Some(session_id);
     self.profile = profile;
   }
 
