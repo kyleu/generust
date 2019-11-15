@@ -1,4 +1,7 @@
 #!/bin/bash
+
+## Installs Rust, additional toolchains, and required components. Good for bootstrapping a new machine.
+
 set -e
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 project_dir=${dir}/..

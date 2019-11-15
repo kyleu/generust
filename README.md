@@ -8,6 +8,8 @@
 
 It uses [actix-web](https://actix.rs), [maud](https://maud.lambda.xyz), [UIKit](https://getuikit.com), and [wasm-bindgen](https://github.com/rustwasm/wasm-bindgen) to serve your app as a server or webview, via HTTP and WebSockets.
 
+Rust nightly is required, at least for now
+
 ## Example Projects
 
 [generust-example-project](https://github.com/kyleu/generust-example-project) - Basically just the result of running this template

@@ -1,4 +1,7 @@
 #!/bin/bash
+
+## Publishes all projects (in a very specific order) to crates.io. Usually used after `version-bump`.
+
 set -e
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 project_dir=${dir}/..

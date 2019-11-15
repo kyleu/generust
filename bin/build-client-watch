@@ -1,4 +1,8 @@
 #!/bin/bash
+
+## Builds the client app using `build-client`, then watches for changes in `client`'s code.
+## Requires fswatch
+
 set -e
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 project_dir=${dir}/..

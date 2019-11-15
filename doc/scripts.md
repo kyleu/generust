@@ -10,15 +10,15 @@ They're designed for macOS, but should work on Linux or Windows (via WSL).
 - `build-css-watch`: Builds the css resources using `build-css`, then watches for changes in `stylesheets`.
 - `build-docker`: Makes a release build, builds a docker image, then exports and zips the output.
 - `build-ios`: Creates a `cargo-lipo` universal library for iOS.
-- `build-linux`: Build a release-mode binary for Linux .
+- `build-linux`: Build a release-mode binary for Linux.
 - `build-mac`: Build a release-mode binary for macOS.
 - `build-windows`: Build a release-mode binary for Windows.
 - `check`: Runs code statistics, checks for outdated dependencies, then runs cargo-audit and clippy.
 - `dev`: Watches the project directories, and runs the main application, restarting when changes are detected.
 - `doc`: Runs rustdoc for all projects, linking between projects and using custom logos and styling.
-- `flamegraph`: Uses `cargo-flamegraph` to prudice and SVG flamegraph of the projects compilation.
+- `flamegraph`: Uses `cargo-flamegraph` to produce an SVG flamegraph of the projects compilation.
 - `format`: Runs `rustfmt` on all projects.
-- `publish`: Publishes all projects (in a very specific order) to crates.io. Usually used after `version-bump`
+- `publish`: Publishes all projects (in a very specific order) to crates.io. Usually used after `version-bump`.
 - `run-docker`: Runs the Docker image produced by `build-docker`, exposing an HTTP port.
 - `run-release`: Builds the project in release mode and runs it.
 - `rustup`: Installs Rust, additional toolchains, and required components. Good for bootstrapping a new machine.

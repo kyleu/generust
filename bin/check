@@ -1,4 +1,8 @@
 #!/bin/bash
+
+## Runs code statistics, checks for outdated dependencies, then runs cargo-audit and clippy.
+## Requires cargo components, see `bin/bootstrap-rust.txt` for a list
+
 set -e
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 project_dir=${dir}/..

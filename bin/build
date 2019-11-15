@@ -1,4 +1,8 @@
 #!/bin/bash
+
+## Runs the code formatter, checks all the projects, then builds binaries for Linux, macOS, Windows, and Docker.
+## Requires cargo components, see `bin/bootstrap-rust.txt` for a list
+
 set -e
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 project_dir=${dir}/..

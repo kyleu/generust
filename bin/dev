@@ -1,4 +1,8 @@
 #!/bin/bash
+
+## Watches the project directories, and runs the main application, restarting when changes are detected.
+## Requires cargo-watch
+
 set -e
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 project_dir=${dir}/..

@@ -1,4 +1,7 @@
 #!/bin/bash
+
+## Passed two arguments, this script will change all references of the old version to a new version.
+
 set -euo pipefail
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"

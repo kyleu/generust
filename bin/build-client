@@ -1,4 +1,8 @@
 #!/bin/bash
+
+## Runs `wasm-pack` for the client Rust code, and `npm install` to bundle it to JavaScript.
+## Requires wasm-pack
+
 set -e
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 project_dir=${dir}/..

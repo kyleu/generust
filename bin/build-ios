@@ -1,4 +1,8 @@
 #!/bin/bash
+
+## Creates a `cargo-lipo` universal library for iOS.
+## Requires cargo-lipo
+
 set -e
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 project_dir=${dir}/..
