@@ -17,19 +17,21 @@
 
 //! `{{project-name}}-controllers` contains actix-web HTTP controllers, usually calling methods from [{{project-name}}-service]({{crate_name}}_service).
 
+pub mod admin;
+pub mod forms {
+  pub mod profile_form;
+}
+pub mod home;
 pub mod routes;
+pub mod static_file;
+pub mod testbed;
 pub mod util {
   pub mod actions;
   pub mod ctx;
   pub mod router;
 }
-pub mod forms {
-  pub mod profile_form;
-}
-pub mod home;
-pub mod static_file;
-pub mod testbed;
 pub mod websocket;
+pub mod websocket_msg;
 
 pub(crate) use crate::util::actions::act;
 pub(crate) use crate::util::actions::not_found;

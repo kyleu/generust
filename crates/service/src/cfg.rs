@@ -1,7 +1,8 @@
+use crate::cache::ConnectionCache;
 use crate::files::FileService;
 
 use slog;
-use std::sync::Arc;
+use std::sync::{Arc, RwLock};
 
 /// Contains information about the running application
 #[derive(Clone, Debug)]
@@ -11,6 +12,7 @@ pub struct AppConfig {
   port: u16,
   verbose: bool,
   files: Arc<FileService>,
+  connections: Arc<RwLock<ConnectionCache>>,
   root_logger: slog::Logger
 }
 
@@ -23,6 +25,7 @@ impl AppConfig {
       port,
       verbose,
       files: Arc::clone(&files),
+      connections: Arc::new(RwLock::new(ConnectionCache::new(&root_logger))),
       root_logger
     }
   }
@@ -45,6 +48,10 @@ impl AppConfig {
 
   pub fn files(&self) -> &FileService {
     &self.files
+  }
+
+  pub fn connections(&self) -> &RwLock<ConnectionCache> {
+    &self.connections
   }
 
   pub fn root_logger(&self) -> &slog::Logger {

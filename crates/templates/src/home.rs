@@ -1,9 +1,9 @@
 use maud::{html, Markup};
 
 use {{crate_name}}_core::Result;
-use {{crate_name}}_service::RequestContext;
+use {{crate_name}}_service::{RequestContext, Router};
 
-pub fn index(ctx: &RequestContext) -> Result<Markup> {
+pub fn index(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let content = html! {
     div.uk-container {
       div.uk-section.uk-section-small {
@@ -14,14 +14,14 @@ pub fn index(ctx: &RequestContext) -> Result<Markup> {
             }
           }
           (socket(ctx)?)
-          (testbed_list(ctx)?)
+          (testbed_list(ctx, router)?)
         }
       }
     }
-    script src=(ctx.router().route_static("client.js")?) defer? {}
+    script src=(router.route_static("client.js")?) defer? {}
   };
   Ok(html! {
-    (crate::simple(ctx, "Home", content)?)
+    (crate::simple(ctx, router, "Home", content)?)
   })
 }
 
@@ -36,7 +36,7 @@ fn socket(ctx: &RequestContext) -> Result<Markup> {
   }))
 }
 
-fn testbed_list(ctx: &RequestContext) -> Result<Markup> {
+fn testbed_list(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let ts = vec![
     ("dump", "Dump", "Displays a bunch of info about the app"),
     ("gallery", "Gallery", "Tests front-end components"),
@@ -50,7 +50,7 @@ fn testbed_list(ctx: &RequestContext) -> Result<Markup> {
       tbody {
         @for t in ts {
           tr {
-            td { a.(ctx.user_profile().link_class()) href=(ctx.router().route("testbed.detail", &[t.0])?) { (t.1) } }
+            td { a.(ctx.user_profile().link_class()) href=(router.route("testbed.detail", &[t.0])?) { (t.1) } }
             td { (t.2) }
           }
         }

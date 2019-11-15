@@ -5,18 +5,25 @@ use {{crate_name}}_core::{RequestMessage, ResponseMessage, Result};
 #[derive(Debug)]
 pub struct MessageHandler {
   id: uuid::Uuid,
+  channel_id: String,
   ctx: RequestContext,
   log: slog::Logger
 }
 
 impl MessageHandler {
-  pub fn new(id: uuid::Uuid, ctx: RequestContext) -> MessageHandler {
-    let log = ctx.log().new(slog::o!("service" => "message_handler"));
-    MessageHandler { id, ctx, log }
+  pub fn new(id: uuid::Uuid, channel_id: String, ctx: RequestContext) -> MessageHandler {
+    let log = ctx
+      .log()
+      .new(slog::o!("service" => "message_handler", "session" => format!("{}", id), "channel" => channel_id.clone()));
+    MessageHandler { id, channel_id, ctx, log }
   }
 
   pub fn id(&self) -> &uuid::Uuid {
     &self.id
+  }
+
+  pub fn channel_id(&self) -> &String {
+    &self.channel_id
   }
 
   pub fn ctx(&self) -> &RequestContext {

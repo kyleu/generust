@@ -2,9 +2,9 @@ use maud::{html, Markup};
 
 use {{crate_name}}_core::profile::Theme;
 use {{crate_name}}_core::Result;
-use {{crate_name}}_service::RequestContext;
+use {{crate_name}}_service::{RequestContext, Router};
 
-pub fn profile(ctx: &RequestContext) -> Result<Markup> {
+pub fn profile(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let content = html! {
     div.uk-section.uk-section-small {
       div.uk-container {
@@ -90,7 +90,7 @@ pub fn profile(ctx: &RequestContext) -> Result<Markup> {
     "#))
   };
   Ok(html! {
-    (crate::simple(ctx, "Profile", content)?)
+    (crate::simple(ctx, router, "Profile", content)?)
   })
 }
 

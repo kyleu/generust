@@ -1,11 +1,11 @@
 use maud::{html, Markup};
 
 use {{crate_name}}_core::Result;
-use {{crate_name}}_service::RequestContext;
+use {{crate_name}}_service::{RequestContext, Router};
 
 use {{crate_name}}_core::build_info;
 
-fn container(ctx: &RequestContext, result: &str, content: Markup) -> Result<Markup> {
+fn container(ctx: &RequestContext, router: &dyn Router, result: &str, content: Markup) -> Result<Markup> {
   let content = html! {
     div.uk-container {
       div.uk-section.uk-section-small {
@@ -22,11 +22,11 @@ fn container(ctx: &RequestContext, result: &str, content: Markup) -> Result<Mark
     }
   };
   Ok(html! {
-    (crate::simple(ctx, "Testbed", content)?)
+    (crate::simple(ctx, router, "Testbed", content)?)
   })
 }
 
-pub fn dump(ctx: &RequestContext) -> Result<Markup> {
+pub fn dump(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let content = crate::card(ctx, html! {
     table.uk-table.uk-table-divider.uk-text-left {
       tbody {
@@ -66,25 +66,25 @@ pub fn dump(ctx: &RequestContext) -> Result<Markup> {
     }
   });
   Ok(html! {
-    (container(ctx, "Dump", content)?)
+    (container(ctx, router, "Dump", content)?)
   })
 }
 
-pub fn gallery(ctx: &RequestContext) -> Result<Markup> {
+pub fn gallery(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let content = crate::gallery::gallery(&ctx);
   Ok(html! {
-    (container(ctx, "Gallery", content)?)
+    (container(ctx, router, "Gallery", content)?)
   })
 }
 
-pub fn prototype(ctx: &RequestContext) -> Result<Markup> {
+pub fn prototype(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let content = html! { "Prototype!" };
   Ok(html! {
-    (crate::components::page::page(ctx, "Prototype!", content)?)
+    (crate::components::page::page(ctx, router, "Prototype!", content)?)
   })
 }
 
-pub fn scroll(ctx: &RequestContext) -> Result<Markup> {
+pub fn scroll(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let content = html! {
     div style="height: 2048px;" {
       "Hello!"
@@ -92,6 +92,6 @@ pub fn scroll(ctx: &RequestContext) -> Result<Markup> {
     }
   };
   Ok(html! {
-    (container(ctx, "Scroll", content)?)
+    (container(ctx, router, "Scroll", content)?)
   })
 }

@@ -21,7 +21,6 @@ pub struct RequestContext {
   app: AppConfig,
   user_id: uuid::Uuid,
   user_profile: UserProfile,
-  router: Box<dyn Router + 'static>,
   flash: Option<(String, String)>,
   log: slog::Logger
 }
@@ -37,7 +36,6 @@ impl RequestContext {
     app: AppConfig,
     user_id: uuid::Uuid,
     user_profile: UserProfile,
-    router: impl Router + 'static,
     log: slog::Logger,
     flash: Option<(String, String)>
   ) -> RequestContext {
@@ -46,7 +44,6 @@ impl RequestContext {
       app,
       user_id,
       user_profile,
-      router: Box::new(router),
       flash,
       log
     }
@@ -62,11 +59,6 @@ impl RequestContext {
 
   pub fn user_profile(&self) -> &UserProfile {
     &self.user_profile
-  }
-
-  #[allow(clippy::borrowed_box)]
-  pub fn router(&self) -> &Box<dyn Router + 'static> {
-    &self.router
   }
 
   pub fn flash(&self) -> &Option<(String, String)> {

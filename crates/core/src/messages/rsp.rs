@@ -5,7 +5,7 @@ use uuid::Uuid;
 
 /// Sent from server to client, this shared model is used for all client communication
 #[allow(variant_size_differences)]
-#[derive(Debug, Serialize, Deserialize)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub enum ResponseMessage {
   Hello {
     session_id: Uuid,

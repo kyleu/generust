@@ -19,12 +19,12 @@ crate-type = ["cdylib", "rlib"]
 
 console_error_panic_hook = "0.1.6"
 instant = "0.1.2"
-js-sys = "0.3.29"
+js-sys = "0.3.31"
 maud = "0.21.0"
 uuid = { version = "0.7.4", features = ["serde", "v4", "wasm-bindgen"] }
-wasm-bindgen = { version = "0.2.52", features = ["nightly"] }
-wasm-bindgen-futures = "0.4.2"
-web-sys = { version = "0.3.29", features = [
+wasm-bindgen = { version = "0.2.54", features = ["nightly"] }
+wasm-bindgen-futures = "0.4.4"
+web-sys = { version = "0.3.31", features = [
   "BinaryType",
   "Blob",
   "console",
@@ -53,4 +53,4 @@ web-sys = { version = "0.3.29", features = [
 ] }
 
 [dev-dependencies]
-wasm-bindgen-test = "0.3.2"
+wasm-bindgen-test = "0.3.4"

@@ -17,6 +17,7 @@
 
 //! `{{project-name}}-service` contains the primary logic for the application. It receives [RequestMessage]({{crate_name}}_core::RequestMessage)s and emits [ResponseMessage]({{crate_name}}_core::ResponseMessage)s
 
+pub mod cache;
 pub mod cfg;
 pub mod ctx;
 pub mod files;
@@ -27,3 +28,5 @@ pub mod profile;
 pub use cfg::AppConfig;
 #[doc(inline)]
 pub use ctx::RequestContext;
+#[doc(inline)]
+pub use ctx::Router;

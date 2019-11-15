@@ -1,6 +1,6 @@
 use actix_web::HttpRequest;
 
-use {{crate_name}}_service::ctx::Router;
+use {{crate_name}}_service::Router;
 
 use {{crate_name}}_core::{Error, Result};
 

@@ -8,7 +8,7 @@ use {{crate_name}}_service::AppConfig;
 
 /// Available at `/`
 pub fn index(session: Session, cfg: web::Data<AppConfig>, req: HttpRequest) -> HttpResponse {
-  crate::act(&session, &cfg, &req, |ctx| {{crate_name}}_templates::home::index(&ctx))
+  crate::act(&session, &cfg, req, |ctx, router| {{crate_name}}_templates::home::index(&ctx, router))
 }
 
 /// Available at `/health`
@@ -18,13 +18,13 @@ pub fn health() -> HttpResponse {
 
 /// Available at `/profile`
 pub fn profile(session: Session, cfg: web::Data<AppConfig>, req: HttpRequest) -> HttpResponse {
-  crate::act(&session, &cfg, &req, |ctx| {{crate_name}}_templates::profile::profile(&ctx))
+  crate::act(&session, &cfg, req, |ctx, router| {{crate_name}}_templates::profile::profile(&ctx, router))
 }
 
 /// Available by posting to `/profile`
 pub fn profile_post(session: Session, cfg: web::Data<AppConfig>, req: HttpRequest, form: Option<web::Form<ProfileForm>>) -> HttpResponse {
   match form {
-    Some(f) => crate::redir(&session, &cfg, &req, |ctx| {
+    Some(f) => crate::redir(&session, &cfg, req, |ctx, router| {
       let profile = UserProfile::new(
         String::from(f.username()),
         f.theme(),
@@ -32,18 +32,8 @@ pub fn profile_post(session: Session, cfg: web::Data<AppConfig>, req: HttpReques
         f.link_color().into()
       );
       {{crate_name}}_service::profile::save(&cfg.files(), &ctx.user_id(), &profile)?;
-      ctx.router().route_simple("profile")
+      router.route_simple("profile")
     }),
-    None => crate::redir(&session, &cfg, &req, |ctx| ctx.router().route_simple("profile"))
+    None => crate::redir(&session, &cfg, req, |_ctx, router| router.route_simple("profile"))
   }
-}
-
-/// Available at `/settings`
-pub fn settings(session: Session, cfg: web::Data<AppConfig>, req: HttpRequest) -> HttpResponse {
-  crate::act(&session, &cfg, &req, |ctx| {{crate_name}}_templates::settings::settings(&ctx))
-}
-
-/// Available by posting to `/settings`
-pub fn settings_post(session: Session, cfg: web::Data<AppConfig>, req: HttpRequest) -> HttpResponse {
-  crate::act(&session, &cfg, &req, |ctx| {{crate_name}}_templates::settings::settings(&ctx))
 }

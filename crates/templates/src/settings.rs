@@ -1,9 +1,9 @@
 use maud::{html, Markup};
 
 use {{crate_name}}_core::Result;
-use {{crate_name}}_service::RequestContext;
+use {{crate_name}}_service::{RequestContext, Router};
 
-pub fn settings(ctx: &RequestContext) -> Result<Markup> {
+pub fn settings(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let content = html! {
     div.uk-section.uk-section-small {
       div.uk-container {
@@ -29,6 +29,6 @@ pub fn settings(ctx: &RequestContext) -> Result<Markup> {
     }
   };
   Ok(html! {
-    (crate::simple(ctx, "Settings", content)?)
+    (crate::simple(ctx, router, "Settings", content)?)
   })
 }

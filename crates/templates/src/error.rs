@@ -1,9 +1,9 @@
 use maud::{html, Markup};
 
 use {{crate_name}}_core::Result;
-use {{crate_name}}_service::RequestContext;
+use {{crate_name}}_service::{RequestContext, Router};
 
-pub fn not_found(ctx: &RequestContext, path: &str) -> Result<Markup> {
+pub fn not_found(ctx: &RequestContext, router: &dyn Router, path: &str) -> Result<Markup> {
   let content = html! {
     div.uk-container {
       div.uk-section.uk-section-small {
@@ -21,11 +21,11 @@ pub fn not_found(ctx: &RequestContext, path: &str) -> Result<Markup> {
     }
   };
   Ok(html! {
-    (crate::simple(ctx, "Not Found", content)?)
+    (crate::simple(ctx, router, "Not Found", content)?)
   })
 }
 
-pub fn exception(ctx: &RequestContext, e: &{{crate_name}}_core::Error) -> Result<Markup> {
+pub fn exception(ctx: &RequestContext, router: &dyn Router, e: &{{crate_name}}_core::Error) -> Result<Markup> {
   let content = html! {
     div.uk-container {
       div.uk-section.uk-section-small {
@@ -52,6 +52,6 @@ pub fn exception(ctx: &RequestContext, e: &{{crate_name}}_core::Error) -> Result
     }
   };
   Ok(html! {
-    (crate::simple(ctx, "Error", content)?)
+    (crate::simple(ctx, router, "Error", content)?)
   })
 }

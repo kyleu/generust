@@ -1,39 +1,19 @@
+use crate::websocket_msg::{SendResponseMessage, ServerSender};
+
 use {{crate_name}}_core::{RequestMessage, ResponseMessage, Result};
 use {{crate_name}}_service::handler::MessageHandler;
 use {{crate_name}}_service::AppConfig;
 
-use actix::{Actor, StreamHandler};
+use actix::{Actor, AsyncContext, StreamHandler};
 use actix_session::Session;
 use actix_web::{web, Error, HttpRequest, HttpResponse};
-use actix_web_actors::ws;
+use actix_web_actors::ws::WebsocketContext;
+use actix_web_actors::ws::{Message, ProtocolError};
 
-struct ServerSocket {
+#[derive(derive_more::Constructor)]
+pub(crate) struct ServerSocket {
   binary: bool,
   handler: MessageHandler
-}
-
-impl Actor for ServerSocket {
-  type Context = ws::WebsocketContext<Self>;
-
-  fn started(&mut self, wsc: &mut Self::Context) {
-    let msgs = match self.handler.on_open() {
-      Ok(m) => m,
-      Err(e) => {
-        slog::error!(self.handler.log(), "Unable to process on_open: {}", e);
-        vec!()
-      }
-    };
-    for msg in msgs {
-      match self.send(&msg, wsc) {
-        Ok(_) => (),
-        Err(e) => slog::warn!(self.handler.log(), "Unable to send initial open messages: {}", e)
-      }
-    }
-  }
-
-  fn stopping(&mut self, _ctx: &mut Self::Context) -> actix::Running {
-    actix::Running::Stop
-  }
 }
 
 impl ServerSocket {
@@ -41,55 +21,97 @@ impl ServerSocket {
     &self.handler
   }
 
-  fn handle_text(&self, s: String, wsc: &mut ws::WebsocketContext<Self>) -> Result<()> {
+  fn handle_text(&self, s: String, wsc: &mut WebsocketContext<Self>) -> Result<()> {
     let req = RequestMessage::from_json(&s)?;
     self.handle_message(req, wsc)
   }
 
-  fn handle_binary(&self, bytes: bytes::Bytes, wsc: &mut ws::WebsocketContext<Self>) -> Result<()> {
+  fn handle_binary(&self, bytes: bytes::Bytes, wsc: &mut WebsocketContext<Self>) -> Result<()> {
     let b: &[u8] = bytes.as_ref();
     let req = RequestMessage::from_binary(&b.to_vec())?;
     self.handle_message(req, wsc)
   }
 
-  fn handle_message(&self, req: RequestMessage, wsc: &mut ws::WebsocketContext<Self>) -> Result<()> {
+  fn handle_message(&self, req: RequestMessage, wsc: &mut WebsocketContext<Self>) -> Result<()> {
     for msg in self.handler.on_message(req)? {
-      self.send(&msg, wsc)?;
+      self.send_ws(&msg, wsc)?;
     }
     Ok(())
   }
 
-  fn handle_error(&self, e: &{{crate_name}}_core::Error, wsc: &mut ws::WebsocketContext<Self>) {
+  fn handle_error(&self, e: &{{crate_name}}_core::Error, wsc: &mut WebsocketContext<Self>) {
     slog::warn!(&self.handler().log(), "Error handling message: {}", e);
     let msg = ResponseMessage::ServerError {
       reason: format!("{}", e),
       content: "Error handling message".into()
     };
-    match self.send(&msg, wsc) {
+    match self.send_ws(&msg, wsc) {
       Ok(_) => (),
       Err(e) => slog::warn!(&self.handler().log(), "Error sending server error message: {}", e)
     }
   }
 
-  fn send(&self, rsp: &ResponseMessage, wsc: &mut ws::WebsocketContext<Self>) -> Result<()> {
+  fn send_ws(&self, rsp: &ResponseMessage, wsc: &mut WebsocketContext<Self>) -> Result<()> {
     if self.binary {
-      wsc.binary(rsp.to_binary()?);
+      wsc.binary(rsp.to_binary()?)
     } else {
-      wsc.text(rsp.to_json()?);
+      wsc.text(rsp.to_json()?)
     }
     Ok(())
   }
 }
 
-impl StreamHandler<ws::Message, ws::ProtocolError> for ServerSocket {
-  fn handle(&mut self, msg: ws::Message, wsc: &mut Self::Context) {
+impl Actor for ServerSocket {
+  type Context = WebsocketContext<Self>;
+
+  fn started(&mut self, wsc: &mut Self::Context) {
+    {
+      let sender = Box::new(ServerSender::new(wsc.address()));
+      let mut connections = self.handler.ctx().app().connections().write().unwrap();
+      connections.add::<ServerSender>(self.handler.channel_id(), *self.handler().id(), sender);
+    }
+    let msgs = match self.handler.on_open() {
+      Ok(m) => m,
+      Err(e) => {
+        slog::error!(self.handler.log(), "Unable to process on_open: {}", e);
+        vec![]
+      }
+    };
+    for msg in msgs {
+      match self.send_ws(&msg, wsc) {
+        Ok(_) => (),
+        Err(e) => slog::warn!(self.handler.log(), "Unable to send initial open messages: {}", e)
+      }
+    }
+  }
+
+  fn stopping(&mut self, _ctx: &mut Self::Context) -> actix::Running {
+    let mut connections = self.handler.ctx().app().connections().write().unwrap();
+    connections.remove(self.handler.channel_id(), *self.handler().id());
+    actix::Running::Stop
+  }
+}
+
+impl actix::Handler<SendResponseMessage> for ServerSocket {
+  type Result = ();
+
+  fn handle(&mut self, m: SendResponseMessage, ctx: &mut Self::Context) {
+    match self.send_ws(m.msg(), ctx) {
+      Ok(_) => (), // noop for now
+      Err(e) => self.handle_error(&{{crate_name}}_core::Error::from(format!("Error sending message [{:?}]: {}", m.msg(), e)), ctx)
+    }
+  }
+}
+
+impl StreamHandler<Message, ProtocolError> for ServerSocket {
+  fn handle(&mut self, msg: Message, wsc: &mut Self::Context) {
     match msg {
-      ws::Message::Ping(msg) => wsc.pong(&msg),
-      ws::Message::Text(text) => match &self.handle_text(text, wsc) {
+      Message::Ping(msg) => wsc.pong(&msg),
+      Message::Text(text) => match &self.handle_text(text, wsc) {
         Ok(_) => (),
         Err(e) => self.handle_error(&e, wsc)
       },
-      ws::Message::Binary(bin) => match self.handle_binary(bin, wsc) {
+      Message::Binary(bin) => match self.handle_binary(bin, wsc) {
         Ok(_) => (),
         Err(e) => self.handle_error(&e, wsc)
       },
@@ -98,11 +120,11 @@ impl StreamHandler<ws::Message, ws::ProtocolError> for ServerSocket {
   }
 }
 
-/// Available at `/connect` (WebSocket handler)
+/// Available at `/s/{key}/connect` (WebSocket handler)`
 pub fn connect(
-  session: Session, cfg: web::Data<AppConfig>, req: HttpRequest, stream: web::Payload
+  session: Session, cfg: web::Data<AppConfig>, key: web::Path<String>, req: HttpRequest, stream: web::Payload
 ) -> std::result::Result<HttpResponse, Error> {
-  let ctx = crate::req_context(&session, &cfg, &req, "connect");
+  let ctx = crate::req_context(&session, &cfg, "connect");
   let binary = match req.query_string() {
     x if x.contains("t=b") => true,
     x if x.contains("t=j") => false,
@@ -110,7 +132,7 @@ pub fn connect(
   };
 
   let id = uuid::Uuid::new_v4();
-  let handler = MessageHandler::new(id, ctx);
-  let socket = ServerSocket { binary, handler };
-  ws::start(socket, &req, stream)
+  let handler = MessageHandler::new(id, key.clone(), ctx);
+  let socket = ServerSocket::new(binary, handler);
+  actix_web_actors::ws::start(socket, &req, stream)
 }

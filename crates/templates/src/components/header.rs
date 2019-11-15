@@ -1,9 +1,9 @@
 use maud::{html, Markup};
 
 use {{crate_name}}_core::Result;
-use {{crate_name}}_service::RequestContext;
+use {{crate_name}}_service::{RequestContext, Router};
 
-pub(crate) fn header(ctx: &RequestContext, title: &str) -> Result<Markup> {
+pub(crate) fn header(ctx: &RequestContext, router: &dyn Router, title: &str) -> Result<Markup> {
   Ok(html! {
     head {
       title { (title) }
@@ -16,13 +16,13 @@ pub(crate) fn header(ctx: &RequestContext, title: &str) -> Result<Markup> {
       meta property="og:locale" content="en_US";
 
       @if ctx.app().verbose() {
-        link rel="stylesheet" media="screen" href=(ctx.router().route_static("vendor/style.css")?);
-        script src=(ctx.router().route_static("vendor/uikit.js")?) {}
-        script src=(ctx.router().route_static("vendor/uikit-icons.js")?) {}
+        link rel="stylesheet" media="screen" href=(router.route_static("vendor/style.css")?);
+        script src=(router.route_static("vendor/uikit.js")?) {}
+        script src=(router.route_static("vendor/uikit-icons.js")?) {}
       } @else {
-        link rel="stylesheet" media="screen" href=(ctx.router().route_static("vendor/style.min.css")?);
-        script src=(ctx.router().route_static("vendor/uikit.min.js")?) {}
-        script src=(ctx.router().route_static("vendor/uikit-icons.min.js")?) {}
+        link rel="stylesheet" media="screen" href=(router.route_static("vendor/style.min.css")?);
+        script src=(router.route_static("vendor/uikit.min.js")?) {}
+        script src=(router.route_static("vendor/uikit-icons.min.js")?) {}
       }
     }
   })

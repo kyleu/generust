@@ -1,9 +1,9 @@
 use maud::{html, Markup};
 
 use {{crate_name}}_core::Result;
-use {{crate_name}}_service::RequestContext;
+use {{crate_name}}_service::{RequestContext, Router};
 
-pub(crate) fn navbar(ctx: &RequestContext) -> Result<Markup> {
+pub(crate) fn navbar(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   Ok(html! {
     header {
       div data-uk-sticky="sel-target: .uk-navbar-container; cls-active: data-uk-navbar-sticky" {
@@ -19,10 +19,10 @@ pub(crate) fn navbar(ctx: &RequestContext) -> Result<Markup> {
           div.uk-navbar-right {
             ul.uk-navbar-nav {
               li {
-                a href=(ctx.router().route_simple("profile")?) data-uk-icon="icon:user" title={ (ctx.user_profile().name()) " Profile" } { }
+                a href=(router.route_simple("profile")?) data-uk-icon="icon:user" title={ (ctx.user_profile().name()) " Profile" } { }
               }
               li {
-                a href=(ctx.router().route_simple("settings")?) data-uk-icon="icon: settings" title="Settings" { }
+                a href=(router.route_simple("admin.list")?) data-uk-icon="icon: settings" title="Settings" { }
               }
             }
           }
