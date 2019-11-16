@@ -15,3 +15,18 @@ pub(crate) fn simple(ctx: &RequestContext, router: &dyn Router, title: &str, con
     }
   })?)
 }
+
+pub(crate) fn section(ctx: &RequestContext, router: &dyn Router, title: &str, content: Markup) -> Result<Markup> {
+  simple(
+    ctx,
+    router,
+    title,
+    html!(
+      div.uk-container {
+        div.uk-section.uk-section-small {
+          (content)
+        }
+      }
+    )
+  )
+}

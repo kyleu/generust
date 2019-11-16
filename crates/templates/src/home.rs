@@ -5,24 +5,16 @@ use {{crate_name}}_service::{RequestContext, Router};
 
 pub fn index(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let content = html! {
-    div.uk-container {
-      div.uk-section.uk-section-small {
-        div.uk-container.uk-container-small {
-          div.uk-text-center {
-            h1.uk-heading-hero {
-              "Welcome to {{project-name}}"
-            }
-          }
-          (socket(ctx)?)
-          (testbed_list(ctx, router)?)
-        }
+    div.uk-text-center {
+      h1.uk-heading-hero {
+        "Welcome to {{project-name}}"
       }
     }
+    (socket(ctx)?)
+    (testbed_list(ctx, router)?)
     script src=(router.route_static("client.js")?) defer? {}
   };
-  Ok(html! {
-    (crate::simple(ctx, router, "Home", content)?)
-  })
+  crate::section(ctx, router, "Home", content)
 }
 
 fn socket(ctx: &RequestContext) -> Result<Markup> {

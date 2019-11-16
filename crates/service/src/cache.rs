@@ -130,7 +130,7 @@ impl ConnectionCache {
     }
   }
 
-  pub fn send_session(&self, id: &Uuid, msg: ResponseMessage) {
+  pub fn send_connection(&self, id: &Uuid, msg: ResponseMessage) {
     match &mut self.connections.get(id) {
       Some(f) => {
         slog::debug!(self.log, "Sending message [{:?}] to connection [{}]", msg, id);

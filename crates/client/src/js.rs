@@ -8,12 +8,8 @@ extern "C" {
   pub(crate) fn log(s: &str, style: &str);
 
   #[allow(unsafe_code)]
-  #[wasm_bindgen(js_namespace = {{crate_name}})]
-  pub(crate) fn activate_tab(id: &str, idx: usize);
-
-  #[allow(unsafe_code)]
-  #[wasm_bindgen(js_namespace = {{crate_name}})]
-  pub(crate) fn wire_textarea(id: &str);
+  #[wasm_bindgen(js_namespace = rustimate)]
+  pub(crate) fn notify(level: &str, content: &str);
 }
 
 #[wasm_bindgen]

@@ -6,8 +6,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Serialize, Deserialize)]
 pub enum RequestMessage {
   Ping { v: i64 },
-  GetVersion,
-  DebugInfo { info: String }
+  GetVersion
 }
 
 impl RequestMessage {

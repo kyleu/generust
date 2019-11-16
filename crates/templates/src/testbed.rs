@@ -7,23 +7,15 @@ use {{crate_name}}_core::build_info;
 
 fn container(ctx: &RequestContext, router: &dyn Router, result: &str, content: Markup) -> Result<Markup> {
   let content = html! {
-    div.uk-container {
-      div.uk-section.uk-section-small {
-        div.uk-container {
-          div.uk-text-center {
-            h1.uk-heading-hero { "Testbed" }
-            div.uk-text-lead { (result) }
-          }
-          div.uk-margin-top {
-            (content)
-          }
-        }
-      }
+    div.uk-text-center {
+      h1.uk-heading-hero { "Testbed" }
+      div.uk-text-lead { (result) }
+    }
+    div.uk-margin-top {
+      (content)
     }
   };
-  Ok(html! {
-    (crate::simple(ctx, router, "Testbed", content)?)
-  })
+  crate::section(ctx, router, "Testbed", content)
 }
 
 pub fn dump(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
@@ -65,23 +57,17 @@ pub fn dump(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
       }
     }
   });
-  Ok(html! {
-    (container(ctx, router, "Dump", content)?)
-  })
+  container(ctx, router, "Dump", content)
 }
 
 pub fn gallery(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let content = crate::gallery::gallery(&ctx);
-  Ok(html! {
-    (container(ctx, router, "Gallery", content)?)
-  })
+  container(ctx, router, "Gallery", content)
 }
 
 pub fn prototype(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let content = html! { "Prototype!" };
-  Ok(html! {
-    (crate::components::page::page(ctx, router, "Prototype!", content)?)
-  })
+  crate::components::page::page(ctx, router, "Prototype!", content)
 }
 
 pub fn scroll(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
@@ -91,7 +77,5 @@ pub fn scroll(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
       " This is a tall block, test scrolling if you'd like "
     }
   };
-  Ok(html! {
-    (container(ctx, router, "Scroll", content)?)
-  })
+  container(ctx, router, "Scroll", content)
 }

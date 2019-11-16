@@ -21,7 +21,6 @@
 
 #[macro_use]
 pub(crate) mod logging;
-
 mod ctx;
 mod event_handler;
 mod html;

@@ -1,6 +1,8 @@
 use crate::cache::ConnectionCache;
 use crate::files::FileService;
 
+use {{crate_name}}_core::ResponseMessage;
+
 use slog;
 use std::sync::{Arc, RwLock};
 
@@ -52,6 +54,14 @@ impl AppConfig {
 
   pub fn connections(&self) -> &RwLock<ConnectionCache> {
     &self.connections
+  }
+
+  pub fn send_channel(&self, key: &str, msg: ResponseMessage) {
+    self.connections().read().unwrap().send_channel(key, msg);
+  }
+
+  pub fn send_connection(&self, id: &uuid::Uuid, msg: ResponseMessage) {
+    self.connections().read().unwrap().send_connection(id, msg);
   }
 
   pub fn root_logger(&self) -> &slog::Logger {

@@ -19,6 +19,7 @@ pub fn add_routes(s: &mut actix_web::web::ServiceConfig) {
     .service(resource("/admin/settings").name("admin.settings").route(get().to(crate::admin::settings)).route(post().to(crate::admin::settings_post)))
     .service(resource("/admin/conn").name("admin.connections").route(get().to(crate::admin::connections)))
     .service(resource("/admin/conn/{id}").name("admin.connection_detail").route(get().to(crate::admin::connection_detail)).route(post().to(crate::admin::connection_send)))
+    .service(resource("/admin/channel/{id}").name("admin.channel_detail").route(get().to(crate::admin::channel_detail)).route(post().to(crate::admin::channel_send)))
 
     // Static
     .service(resource("/favicon.ico").name("favicon").route(get().to(crate::static_file::favicon)))

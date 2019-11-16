@@ -1,4 +1,4 @@
-class Rustimate < Formula
+class {{crate_name}} < Formula
   version 'v0.0.40'
   desc "A work in progress."
   homepage "https://github.com/{{project-name}}/{{project-name}}"

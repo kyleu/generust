@@ -4,6 +4,7 @@ use {{crate_name}}_core::{Error, RequestMessage, Result};
 
 use std::rc::Rc;
 use std::sync::RwLock;
+use uuid::Uuid;
 use web_sys::{Document, Window};
 
 #[derive(Debug)]
@@ -11,7 +12,7 @@ pub(crate) struct ClientContext {
   window: Window,
   document: Document,
   socket: ClientSocket,
-  session_id: Option<uuid::Uuid>,
+  connection_id: Option<uuid::Uuid>,
   profile: UserProfile
 }
 
@@ -29,7 +30,7 @@ impl ClientContext {
       window,
       document,
       socket,
-      session_id: None,
+      connection_id: None,
       profile
     }));
 
@@ -54,9 +55,9 @@ impl ClientContext {
     &self.profile
   }
 
-  pub(crate) fn on_hello(&mut self, session_id: uuid::Uuid, profile: UserProfile, binary: bool) {
+  pub(crate) fn on_connected(&mut self, connection_id: Uuid, profile: UserProfile, binary: bool) {
     self.socket.set_binary(binary);
-    self.session_id = Some(session_id);
+    self.connection_id = Some(connection_id);
     self.profile = profile;
   }
 

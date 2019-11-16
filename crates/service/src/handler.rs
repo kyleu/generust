@@ -4,22 +4,22 @@ use {{crate_name}}_core::{RequestMessage, ResponseMessage, Result};
 /// Core application logic, routing [RequestMessage]({{crate_name}}_core::RequestMessage)s and emitting [ResponseMessage]({{crate_name}}_core::ResponseMessage)s.
 #[derive(Debug)]
 pub struct MessageHandler {
-  id: uuid::Uuid,
+  connection_id: uuid::Uuid,
   channel_id: String,
   ctx: RequestContext,
   log: slog::Logger
 }
 
 impl MessageHandler {
-  pub fn new(id: uuid::Uuid, channel_id: String, ctx: RequestContext) -> MessageHandler {
+  pub fn new(connection_id: uuid::Uuid, channel_id: String, ctx: RequestContext) -> MessageHandler {
     let log = ctx
       .log()
-      .new(slog::o!("service" => "message_handler", "session" => format!("{}", id), "channel" => channel_id.clone()));
-    MessageHandler { id, channel_id, ctx, log }
+      .new(slog::o!("connection" => format!("{}", connection_id), "service" => "message_handler", "channel" => channel_id.clone()));
+    MessageHandler { connection_id, channel_id, ctx, log }
   }
 
-  pub fn id(&self) -> &uuid::Uuid {
-    &self.id
+  pub fn connection_id(&self) -> &uuid::Uuid {
+    &self.connection_id
   }
 
   pub fn channel_id(&self) -> &String {
@@ -31,8 +31,8 @@ impl MessageHandler {
   }
 
   pub fn on_open(&self) -> Result<Vec<ResponseMessage>> {
-    Ok(vec![ResponseMessage::Hello {
-      session_id: *self.id(),
+    Ok(vec![ResponseMessage::Connected {
+      connection_id: *self.connection_id(),
       u: Box::new((*self.ctx.user_profile()).clone()),
       b: !self.ctx.app().verbose()
     }])
