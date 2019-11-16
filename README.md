@@ -12,19 +12,19 @@ Rust nightly is required, at least for now
 
 ## Screenshots
 
-![Index Page](doc/01_index.png)
+![Index Page](doc/images/01_index.png)
 Normally started as a server, Generust also embeds a webview, allowing you to run a standalone instance.
 
-![User Profile](doc/02_profile.png)
+![User Profile](doc/images/02_profile.png)
 User profile settings allow you to set your name and theme.
 
-![UIKit](doc/03_gallery.png)
+![UIKit](doc/images/03_gallery.png)
 UIKit integration and reverse routing make designing attractive pages simple.
 
-![Dark Mode](doc/04_gallery_dark.png)
+![Dark Mode](doc/images/04_gallery_dark.png)
 I don't get it, but some of you love Dark Mode. Well, here it is.
 
-![Backtrace](doc/05_backtrace.png)
+![Backtrace](doc/images/05_backtrace.png)
 Custom error pages show detailed traces (or custom error pages)
 
 ## Example Projects
