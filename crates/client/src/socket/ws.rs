@@ -95,5 +95,12 @@ fn calc_url(src: &str) -> String {
     .collect::<Vec<&str>>()[0]
     .split('?')
     .collect::<Vec<&str>>()[0];
-  format!("{}://{}/connect", protocol, cleaned)
+  let path = if cleaned.chars().filter().map(|c| c == '/').len() < 2 {
+    let p = format!("{}/s/test", cleaned);
+    debug!("Using [test] channel [{}]", p);
+    p
+  } else {
+    cleaned
+  };
+  format!("{}://{}/connect", protocol, path)
 }
