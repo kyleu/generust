@@ -20,6 +20,7 @@
 //! `{{project-name}}-templates` contains server HTML templates.
 
 pub mod admin;
+pub mod connections;
 pub(crate) mod components {
   pub(crate) mod backtrace;
   pub(crate) mod card;

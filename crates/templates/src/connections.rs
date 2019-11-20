@@ -1,6 +1,7 @@
 use maud::{html, Markup};
 
 use {{crate_name}}_core::Result;
+use {{crate_name}}_core::util::NotificationLevel;
 use {{crate_name}}_service::{RequestContext, Router};
 
 pub fn connections(
@@ -19,8 +20,8 @@ pub fn connections(
     ul {
       @for c in &channels {
         li {
-          a.(ctx.user_profile().link_class()) href=(router.route("admin.channel_detail", &[&format!("{}", c.0)])?) {
-            (format!("{}", c.0))
+          a.(ctx.user_profile().link_class()) href=(router.route("admin.channel_detail", &[&c.0])?) {
+            (c.0)
           }
           (format!(": {} connections", c.1.len()))
           ul {
@@ -33,10 +34,7 @@ pub fn connections(
     }
   });
 
-  let content = html!(
-    (conn_content)
-    (channel_content)
-  );
+  let content = html!((conn_content)(channel_content));
   crate::section(ctx, router, "Connection Listing", content)
 }
 
@@ -48,16 +46,24 @@ pub fn connection_detail(ctx: &RequestContext, router: &dyn Router, id: uuid::Uu
   crate::section(ctx, router, "Connection Detail", content)
 }
 
+pub fn channel_detail(ctx: &RequestContext, router: &dyn Router, key: &str) -> Result<Markup> {
+  let content = html!(
+    h3 { (format!("Channel [{}]", key)) }
+    (send_form())
+  );
+  crate::section(ctx, router, "Connection Detail", content)
+}
+
 fn send_form() -> Markup {
+  let levels = vec!(NotificationLevel::Info, NotificationLevel::Success, NotificationLevel::Warn, NotificationLevel::Error);
   html!(
     form.uk-form-stacked action="" method="post" {
       div.uk-margin-small {
         label.uk-form-label { "Level" }
         select.uk-select name="level" {
-          option value="success" { "Success" }
-          option value="info" { "Info" }
-          option value="warning" { "Warning" }
-          option value="error" { "Error" }
+          @for l in levels {
+            option value=(l) { (l) }
+          }
         }
       }
       div.uk-margin-small {
@@ -69,12 +75,4 @@ fn send_form() -> Markup {
       }
     }
   )
-}
-
-pub fn channel_detail(ctx: &RequestContext, router: &dyn Router, key: &str) -> Result<Markup> {
-  let content = html!(
-    h3 { (format!("Channel [{}]", key)) }
-    (send_form())
-  );
-  crate::section(ctx, router, "Connection Detail", content)
 }

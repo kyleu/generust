@@ -8,7 +8,7 @@ extern "C" {
   pub(crate) fn log(s: &str, style: &str);
 
   #[allow(unsafe_code)]
-  #[wasm_bindgen(js_namespace = rustimate)]
+  #[wasm_bindgen(js_namespace = {{crate_name}})]
   pub(crate) fn notify(level: &str, content: &str);
 }
 

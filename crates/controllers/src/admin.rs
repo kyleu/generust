@@ -5,6 +5,7 @@ use actix_web::web::{Data, Form, Path};
 use actix_web::{HttpRequest, HttpResponse};
 
 use {{crate_name}}_core::ResponseMessage;
+use {{crate_name}}_core::util::NotificationLevel;
 use {{crate_name}}_service::AppConfig;
 
 /// Available at `/admin`
@@ -16,20 +17,20 @@ pub fn list(session: Session, cfg: Data<AppConfig>, req: HttpRequest) -> HttpRes
 pub fn connections(session: Session, cfg: Data<AppConfig>, req: HttpRequest) -> HttpResponse {
   crate::act(&session, &cfg, req, |ctx, router| {
     let conn = ctx.app().connections().read().unwrap();
-    {{crate_name}}_templates::admin::connections(&ctx, router, conn.conn_list(), conn.channel_list())
+    {{crate_name}}_templates::connections::connections(&ctx, router, conn.conn_list(), conn.channel_list())
   })
 }
 
 #[derive(Debug, serde::Deserialize)]
 pub struct SendForm {
-  level: String,
+  level: NotificationLevel,
   content: String
 }
 
 /// Available at `/admin/conn/{id}`
 pub fn connection_detail(session: Session, cfg: Data<AppConfig>, id: Path<uuid::Uuid>, req: HttpRequest) -> HttpResponse {
   crate::act(&session, &cfg, req, |ctx, router| {
-    {{crate_name}}_templates::admin::connection_detail(&ctx, router, *id)
+    {{crate_name}}_templates::connections::connection_detail(&ctx, router, *id)
   })
 }
 
@@ -57,7 +58,7 @@ pub fn connection_send(session: Session, cfg: Data<AppConfig>, id: Path<uuid::Uu
 /// Available at `/admin/channel/{id}`
 pub fn channel_detail(session: Session, cfg: Data<AppConfig>, key: Path<String>, req: HttpRequest) -> HttpResponse {
   crate::act(&session, &cfg, req, |ctx, router| {
-    {{crate_name}}_templates::admin::channel_detail(&ctx, router, &key)
+    {{crate_name}}_templates::connections::channel_detail(&ctx, router, &key)
   })
 }
 

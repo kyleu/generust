@@ -12,7 +12,7 @@ pub(crate) struct ClientContext {
   window: Window,
   document: Document,
   socket: ClientSocket,
-  connection_id: Option<uuid::Uuid>,
+  connection_id: Option<Uuid>,
   profile: UserProfile
 }
 
