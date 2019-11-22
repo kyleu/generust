@@ -1,5 +1,7 @@
 use crate::RequestContext;
-use {{crate_name}}_core::{RequestMessage, ResponseMessage, Result};
+
+use anyhow::Result;
+use {{crate_name}}_core::{RequestMessage, ResponseMessage};
 
 /// Core application logic, routing [RequestMessage]({{crate_name}}_core::RequestMessage)s and emitting [ResponseMessage]({{crate_name}}_core::ResponseMessage)s.
 #[derive(Debug)]

@@ -1,6 +1,5 @@
+use anyhow::Result;
 use maud::{html, Markup};
-
-use {{crate_name}}_core::Result;
 use {{crate_name}}_service::{RequestContext, Router};
 
 pub(crate) fn simple(ctx: &RequestContext, router: &dyn Router, title: &str, content: Markup) -> Result<Markup> {

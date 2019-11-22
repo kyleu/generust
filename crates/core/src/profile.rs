@@ -1,4 +1,3 @@
-use crate::{Error, Result};
 
 use serde::{Deserialize, Serialize};
 
@@ -10,13 +9,13 @@ pub enum Theme {
 }
 
 impl std::str::FromStr for Theme {
-  type Err = Error;
+  type Err = anyhow::Error;
 
-  fn from_str(s: &str) -> Result<Self> {
+  fn from_str(s: &str) -> anyhow::Result<Self> {
     match s {
       "Light" => Ok(Theme::Light),
       "Dark" => Ok(Theme::Dark),
-      _ => Err(Error::from(format!("Invalid theme [{}]", s)))
+      _ => Err(anyhow::anyhow!("Invalid theme [{}]", s))
     }
   }
 }

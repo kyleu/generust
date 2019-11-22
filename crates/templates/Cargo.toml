@@ -13,7 +13,7 @@ license = "MIT"
 {{project-name}}-core = { version = "0.0.1", path = "../core" }
 {{project-name}}-service = { version = "0.0.1", path = "../service" }
 
-backtrace = "0.3.40"
+anyhow = "1.0"
 maud = "0.21.0"
 num_cpus = "1.11.1"
 serde = { version = "1.0.102", features = ["derive"] }

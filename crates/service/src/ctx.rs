@@ -1,8 +1,7 @@
-use slog;
-
 use crate::cfg::AppConfig;
+
+use anyhow::Result;
 use {{crate_name}}_core::profile::UserProfile;
-use {{crate_name}}_core::Result;
 
 /// Provides reverse routing of urls
 pub trait Router {

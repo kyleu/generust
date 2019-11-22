@@ -1,3 +1,3 @@
-fn main() -> {{crate_name}}_core::Result<()> {
+fn main() -> anyhow::Result<()> {
   {{crate_name}}::go()
 }

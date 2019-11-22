@@ -1,9 +1,7 @@
-use maud::{html, Markup};
-
-use {{crate_name}}_core::Result;
+use anyhow::Result;
 use {{crate_name}}_service::{RequestContext, Router};
-
 use {{crate_name}}_core::build_info;
+use maud::{html, Markup};
 
 fn container(ctx: &RequestContext, router: &dyn Router, result: &str, content: Markup) -> Result<Markup> {
   let content = html! {

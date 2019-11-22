@@ -1,6 +1,5 @@
+use anyhow::Result;
 use {{crate_name}}_core::messages::req::RequestMessage;
-use {{crate_name}}_core::{Error, Result};
-
 use wasm_bindgen::prelude::{Closure, JsValue};
 use wasm_bindgen::JsCast;
 use web_sys::{ErrorEvent, MessageEvent, WebSocket};
@@ -15,7 +14,7 @@ pub(crate) struct ClientSocket {
 impl ClientSocket {
   pub(crate) fn new(curr_url: &str, binary: bool) -> Result<ClientSocket> {
     let url = calc_url(curr_url);
-    let ws = WebSocket::new(&url).map_err(|e| Error::from(format!("Error creating WebSocket: {:?}", e)))?;
+    let ws = WebSocket::new(&url).map_err(|e| anyhow::anyhow!(format!("Error creating WebSocket: {:?}", e)))?;
     ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
     Ok(ClientSocket { url, binary, ws })
   }

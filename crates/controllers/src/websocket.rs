@@ -1,14 +1,14 @@
 use crate::websocket_msg::{SendResponseMessage, ServerSender};
 
-use {{crate_name}}_core::{RequestMessage, ResponseMessage, Result};
-use {{crate_name}}_service::handler::MessageHandler;
-use {{crate_name}}_service::AppConfig;
-
 use actix::{Actor, AsyncContext, StreamHandler};
 use actix_session::Session;
 use actix_web::{web, Error, HttpRequest, HttpResponse};
 use actix_web_actors::ws::WebsocketContext;
 use actix_web_actors::ws::{Message, ProtocolError};
+use anyhow::Result;
+use {{crate_name}}_core::{RequestMessage, ResponseMessage};
+use {{crate_name}}_service::handler::MessageHandler;
+use {{crate_name}}_service::AppConfig;
 
 #[derive(derive_more::Constructor)]
 pub(crate) struct ServerSocket {
@@ -39,7 +39,7 @@ impl ServerSocket {
     Ok(())
   }
 
-  fn handle_error(&self, e: &{{crate_name}}_core::Error, wsc: &mut WebsocketContext<Self>) {
+  fn handle_error(&self, e: &anyhow::Error, wsc: &mut WebsocketContext<Self>) {
     slog::warn!(&self.handler().log(), "Error handling message: {}", e);
     let msg = ResponseMessage::ServerError {
       reason: format!("{}", e),
@@ -98,7 +98,10 @@ impl actix::Handler<SendResponseMessage> for ServerSocket {
   fn handle(&mut self, m: SendResponseMessage, ctx: &mut Self::Context) {
     match self.send_ws(m.msg(), ctx) {
       Ok(_) => (), // noop for now
-      Err(e) => self.handle_error(&{{crate_name}}_core::Error::from(format!("Error sending message [{:?}]: {}", m.msg(), e)), ctx)
+      Err(e) => self.handle_error(
+        &e.context(format!("Error sending message [{:?}]", m.msg())),
+        ctx
+      )
     }
   }
 }

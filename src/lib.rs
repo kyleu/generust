@@ -38,7 +38,7 @@ mod server;
 pub mod tests;
 
 /// Application entrypoint, creates and starts the server
-pub fn go() -> {{crate_name}}_core::Result<()> {
+pub fn go() -> anyhow::Result<()> {
   let cfg = crate::cfg::cfg_from_args();
   crate::app::start(cfg)
 }

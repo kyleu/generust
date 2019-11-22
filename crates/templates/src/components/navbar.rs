@@ -1,6 +1,5 @@
+use anyhow::Result;
 use maud::{html, Markup};
-
-use {{crate_name}}_core::Result;
 use {{crate_name}}_service::{RequestContext, Router};
 
 pub(crate) fn navbar(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {

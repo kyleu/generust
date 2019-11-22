@@ -1,4 +1,5 @@
 #![feature(proc_macro_hygiene)]
+#![feature(backtrace)]
 #![warn(anonymous_parameters)]
 #![warn(bare_trait_objects)]
 #![warn(elided_lifetimes_in_paths)]

@@ -1,12 +1,13 @@
 use crate::ctx::ClientContext;
-use {{crate_name}}_core::{Error, ResponseMessage, Result};
 
+use anyhow::Result;
 use js_sys::{ArrayBuffer, Uint8Array};
 use std::rc::Rc;
 use std::sync::RwLock;
 use wasm_bindgen::prelude::{Closure, JsValue};
 use wasm_bindgen::JsCast;
 use web_sys::{Blob, ErrorEvent, FileReader, MessageEvent};
+use {{crate_name}}_core::ResponseMessage;
 
 pub(crate) fn on_open(ctx: &Rc<RwLock<ClientContext>>) -> Result<()> {
   ctx.read().unwrap().on_open()
@@ -52,7 +53,7 @@ fn on_blob_message(ctx: &Rc<RwLock<ClientContext>>, data: JsValue) -> Result<()>
 fn on_text_message(ctx: &Rc<RwLock<ClientContext>>, data: JsValue) -> Result<()> {
   match data.as_string() {
     Some(s) => handle(ctx, ResponseMessage::from_json(&s)?),
-    None => Err(Error::from(format!("Can't convert received data to a string: {:?}", data)))
+    None => Err(anyhow::anyhow!(format!("Can't convert received data to a string: {:?}", data)))
   }
 }
 

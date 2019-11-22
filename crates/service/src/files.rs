@@ -1,5 +1,4 @@
-use {{crate_name}}_core::{Result, ResultExt};
-
+use anyhow::{Context, Result};
 use std::fs::read_dir;
 use std::io::prelude::Write;
 
@@ -35,7 +34,7 @@ impl FileService {
   pub(crate) fn _list_json(&self, path: &str) -> Result<Vec<String>> {
     let p = self.path().join(path);
     if p.is_dir() {
-      let rd = read_dir(&p).chain_err(|| format!("Can't read directory [{}]", p.to_string_lossy()))?;
+      let rd = read_dir(&p).with_context(|| format!("Can't read directory [{}]", p.to_string_lossy()))?;
 
       let mut entries = rd
         .filter_map(|entry| {
@@ -57,18 +56,18 @@ impl FileService {
 
   fn read(&self, path: &str) -> Result<String> {
     let p = self.path().join(clean_path(path));
-    std::fs::read_to_string(&p).chain_err(|| format!("Can't read from file [{}]", p.to_string_lossy()))
+    std::fs::read_to_string(&p).with_context(|| format!("Can't read from file [{}]", p.to_string_lossy()))
   }
 
   pub(crate) fn read_json<T>(&self, path: &str) -> Result<T>
   where T: serde::de::DeserializeOwned {
     let json = self.read(path)?;
-    serde_json::from_str(&json).chain_err(|| "Can't decode json")
+    serde_json::from_str(&json).with_context(|| "Can't decode json")
   }
 
   pub(crate) fn write(&self, path: &str, content: &str) -> Result<()> {
     let p = self.path().join(clean_path(path));
-    let mut file = std::fs::File::create(p).chain_err(|| {
+    let mut file = std::fs::File::create(p).with_context(|| {
       format!(
         "Can't create file [{}] in directory [{}]",
         clean_path(path),
@@ -77,25 +76,25 @@ impl FileService {
     })?;
     file
       .write_all(&content.as_bytes())
-      .chain_err(|| format!("Can't write to file [{}]", clean_path(path)))?;
+      .with_context(|| format!("Can't write to file [{}]", clean_path(path)))?;
     Ok(())
   }
 
   pub fn write_json<T>(&self, o: T, path: &str) -> Result<()>
   where T: serde::Serialize {
-    let content = serde_json::to_string_pretty(&o).chain_err(|| "Can't encode json")?;
+    let content = serde_json::to_string_pretty(&o).with_context(|| "Can't encode json")?;
     self.write(path, &content)
   }
 
   pub(crate) fn create_dir_if_needed(&self, path: &str) -> Result<()> {
     let p = self.path().join(path);
-    std::fs::create_dir_all(p).chain_err(|| format!("Can't create directory at path [{}]", path))
+    std::fs::create_dir_all(p).with_context(|| format!("Can't create directory at path [{}]", path))
   }
 
   // Unused, rename if you need it
   pub(crate) fn _remove(&self, path: &str) -> Result<()> {
     let p = self.path().join(clean_path(path));
-    std::fs::remove_file(p).chain_err(|| format!("Can't remove file at [{}]", path))
+    std::fs::remove_file(p).with_context(|| format!("Can't remove file at [{}]", path))
   }
 }
 

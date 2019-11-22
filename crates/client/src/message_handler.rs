@@ -1,11 +1,11 @@
 use crate::ctx::ClientContext;
 
-use {{crate_name}}_core::profile::UserProfile;
-use {{crate_name}}_core::util::NotificationLevel;
-use {{crate_name}}_core::{ResponseMessage, Result};
-
+use anyhow::Result;
 use maud::html;
 use std::sync::RwLock;
+use {{crate_name}}_core::profile::UserProfile;
+use {{crate_name}}_core::util::NotificationLevel;
+use {{crate_name}}_core::ResponseMessage;
 
 pub(crate) struct MessageHandler {}
 

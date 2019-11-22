@@ -1,5 +1,4 @@
-use {{crate_name}}_core::{Error, Result};
-
+use anyhow::Result;
 use wasm_bindgen::JsCast;
 
 impl crate::ctx::ClientContext {
@@ -11,9 +10,9 @@ impl crate::ctx::ClientContext {
     match self.document().get_element_by_id(id) {
       Some(e) => match e.dyn_into::<T>() {
         Ok(el) => Ok(el),
-        Err(_) => Err(Error::from(format!("Cannot load html element with id [{}]", id)))
+        Err(_) => Err(anyhow::anyhow!(format!("Cannot load html element with id [{}]", id)))
       },
-      None => Err(Error::from(format!("Cannot load element with id [{}]", id)))
+      None => Err(anyhow::anyhow!(format!("Cannot load element with id [{}]", id)))
     }
   }
 
@@ -21,8 +20,8 @@ impl crate::ctx::ClientContext {
     match self.document().create_element(tag) {
       Ok(el) => el
         .dyn_into::<T>()
-        .map_err(|_| Error::from(format!("Cannot cast [{}] element", tag))),
-      Err(_) => Err(Error::from(format!("Cannot create [{}] element", tag)))
+        .map_err(|_| anyhow::anyhow!(format!("Cannot cast [{}] element", tag))),
+      Err(_) => Err(anyhow::anyhow!(format!("Cannot create [{}] element", tag)))
     }
   }
 
@@ -32,7 +31,7 @@ impl crate::ctx::ClientContext {
     el.set_inner_html(&template.into_string());
     parent
       .append_child(&el)
-      .map_err(|_| Error::from(format!("Cannot load html element with id [{}]", id)))
+      .map_err(|_| anyhow::anyhow!(format!("Cannot load html element with id [{}]", id)))
       .map(|_| el)
   }
 

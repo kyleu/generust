@@ -1,11 +1,10 @@
-use {{crate_name}}_core::{Error, Result};
-
 use {{crate_name}}_controllers::routes::add_routes;
 use {{crate_name}}_service::AppConfig;
 
 use actix_service::Service;
 use actix_session::CookieSession;
 use actix_web::{App, HttpServer};
+use anyhow::Result;
 use futures::future::Future;
 use std::time::SystemTime;
 
@@ -60,12 +59,12 @@ pub(crate) fn start_server(cfg: AppConfig, port_tx: std::sync::mpsc::Sender<u16>
       let _ = port_tx.send(port);
       let msg = format!("[{{project-name}}] started, open http://{}:{} to get going!", cfg.address(), port);
       slog::info!(cfg.root_logger(), "{}", msg);
-      s.run().map_err(|e| Error::from(format!("Error creating web server: {:?}", e)))
+      s.run().map_err(|e| anyhow::anyhow!(format!("Error creating web server: {:?}", e)))
     }
     Err(e) => {
       let msg = format!("Error starting server on port [{}]: {}", cfg.port(), e);
       slog::info!(cfg.root_logger(), "{}", msg);
-      Err(Error::from(msg))
+      Err(anyhow::anyhow!(msg))
     }
   }
 }

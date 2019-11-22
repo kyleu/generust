@@ -1,7 +1,7 @@
-use maud::{html, Markup, PreEscaped};
-
 use crate::components;
-use {{crate_name}}_core::Result;
+
+use anyhow::Result;
+use maud::{html, Markup, PreEscaped};
 use {{crate_name}}_service::{RequestContext, Router};
 
 pub(crate) fn page(ctx: &RequestContext, router: &dyn Router, title: &str, content: Markup) -> Result<Markup> {
