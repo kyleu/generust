@@ -9,9 +9,11 @@ project_dir=${dir}/..
 cd $project_dir
 
 cd crates/client
+echo "=== wasm-pack ==="
 wasm-pack build
 
 cd www
+echo "=== npm install ==="
 npm install
 rm -rf dist
 npm run build
@@ -19,14 +21,22 @@ npm run build
 cd dist
 
 for file in *.wasm; do
-  echo "###: ${file%.module.wasm}"
+  echo "Current hashcode: ${file%.module.wasm}"
   sed -i "" "s/${file%.module.wasm}/{{project-name}}/g" bootstrap.js
 
   mv "$file" "{{project-name}}.module.wasm"
 done
 
 mkdir -p ../../../assets/embed/wasm/
-cp {{project-name}}.module.wasm ../../../assets/embed/wasm/
 
+set +e
+echo "=== wasm-opt ==="
+wasm-opt -O -o {{project-name}}.module.wasm {{project-name}}.module.wasm
+set -e
+
+echo "=== copying files ==="
+cp {{project-name}}.module.wasm ../../../assets/embed/wasm/
 cat 0.bootstrap.js bootstrap.js > client.js
 cp client.js ../../../assets/embed
+
+echo "=== complete ==="
