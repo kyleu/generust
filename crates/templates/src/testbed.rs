@@ -1,7 +1,7 @@
 use anyhow::Result;
+use maud::{html, Markup};
 use {{crate_name}}_service::{RequestContext, Router};
 use {{crate_name}}_core::build_info;
-use maud::{html, Markup};
 
 fn container(ctx: &RequestContext, router: &dyn Router, result: &str, content: Markup) -> Result<Markup> {
   let content = html! {
@@ -71,8 +71,7 @@ pub fn prototype(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
 pub fn scroll(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let content = html! {
     div style="height: 2048px;" {
-      "Hello!"
-      " This is a tall block, test scrolling if you'd like "
+      "This is a tall block, test scrolling if you'd like "
     }
   };
   container(ctx, router, "Scroll", content)

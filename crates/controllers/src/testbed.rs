@@ -12,7 +12,7 @@ pub fn testbed_key(session: Session, cfg: web::Data<AppConfig>, key: web::Path<S
       "gallery" => {{crate_name}}_templates::testbed::gallery(&ctx, router),
       "prototype" => {{crate_name}}_templates::testbed::prototype(&ctx, router),
       "scroll" => {{crate_name}}_templates::testbed::scroll(&ctx, router),
-      _ => Err(anyhow::anyhow!(format!("Cannot find testbed matching [{}]", key)))
+      _ => Err(anyhow::anyhow!("Cannot find testbed matching [{}]", key))
     }
   })
 }

@@ -18,7 +18,7 @@
 #![doc(html_logo_url = "https://raw.githubusercontent.com/{{project-name}}/{{project-name}}/master/crates/assets/embed/favicon.png")]
 #![doc(issue_tracker_base_url = "https://github.com/{{project-name}}/{{project-name}}/issues/")]
 
-//! `{{project-name}}-templates` contains server HTML templates.
+//! `{{project-name}}-templates` contains Maud templates used by the server to render responses
 
 pub mod admin;
 pub mod connections;

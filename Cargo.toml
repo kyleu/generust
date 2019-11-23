@@ -46,7 +46,7 @@ clap = "2.33.0"
 {{project-name}}-service = { version = "0.0.1", path = "crates/service" }
 {{project-name}}-templates = { version = "0.0.1", path = "crates/templates" }
 failure = "0.1.6"
-flate2 = "1.0.12"
+flate2 = "1.0.13"
 futures = "0.1.29"
 http = "0.1.19"
 iovec = "0.1.4"
@@ -62,7 +62,7 @@ tokio-reactor = "0.1.10"
 tokio-sync = "0.1.7"
 
 [target.'cfg(any(target_os = "macos", target_os = "windows"))'.dependencies]
-web-view = { version = "0.5.3" }
+web-view = { version = "0.5.4" }
 
 [target.'cfg(target_os="android")'.dependencies]
 jni = { version = "0.14.0", default-features = false }

@@ -40,13 +40,13 @@ pub(crate) fn cfg_from_args() -> AppConfig {
     }
     None => ("app", "127.0.0.1", 0)
   };
-  AppConfig::new(task.into(), address.into(), port, cfg_dir, verbose, log)
+  AppConfig::new(task.into(), address.into(), port, cfg_dir, log, verbose)
 }
 
 fn default_cfg_dir(log: &slog::Logger) -> String {
   let app_info = app_dirs2::AppInfo {
     name: {{crate_name}}_core::APPNAME,
-    author: "{{project-name}}"
+    author: "{{authors}}"
   };
   let ret: String = match app_dirs2::get_app_root(app_dirs2::AppDataType::UserConfig, &app_info) {
     Ok(d) => d.to_string_lossy().into(),

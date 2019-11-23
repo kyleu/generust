@@ -14,7 +14,7 @@ pub fn profile(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
         }
         div.uk-margin-top.uk-container.uk-container-small {
           (crate::card(&ctx, html! {
-            form action="#" method="post" {
+            form action="" method="post" {
               fieldset.uk-fieldset {
                 div.uk-margin {
                   label for="username" { "Username" }

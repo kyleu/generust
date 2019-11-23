@@ -62,4 +62,14 @@ impl MessageHandler {
     self.ctx().app().send_connection(self.connection_id(), msg);
     Ok(())
   }
+
+  fn _send_to_channel(&self, msg: ResponseMessage) -> Result<()> {
+    self.ctx().app().send_channel(self.project().key(), msg);
+    Ok(())
+  }
+
+  fn _send_to_channel_except_self(&self, msg: ResponseMessage) -> Result<()> {
+    self.ctx().app().send_channel_except(self.project().key(), vec!(self.connection_id()), msg);
+    Ok(())
+  }
 }

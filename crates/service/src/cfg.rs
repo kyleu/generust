@@ -2,8 +2,6 @@ use crate::cache::ConnectionCache;
 use crate::files::FileService;
 
 use {{crate_name}}_core::ResponseMessage;
-
-use slog;
 use std::sync::{Arc, RwLock};
 
 /// Contains information about the running application
@@ -12,23 +10,23 @@ pub struct AppConfig {
   task: String,
   address: String,
   port: u16,
-  verbose: bool,
   files: Arc<FileService>,
   connections: Arc<RwLock<ConnectionCache>>,
-  root_logger: slog::Logger
+  root_logger: slog::Logger,
+  verbose: bool
 }
 
 impl AppConfig {
-  pub fn new(task: String, address: String, port: u16, cfg_dir: String, verbose: bool, root_logger: slog::Logger) -> AppConfig {
+  pub fn new(task: String, address: String, port: u16, cfg_dir: String, root_logger: slog::Logger, verbose: bool) -> AppConfig {
     let files = Arc::new(FileService::new(&cfg_dir, &root_logger));
     AppConfig {
       task,
       address,
       port,
-      verbose,
       files: Arc::clone(&files),
       connections: Arc::new(RwLock::new(ConnectionCache::new(&root_logger))),
-      root_logger
+      root_logger,
+      verbose
     }
   }
 
@@ -42,10 +40,6 @@ impl AppConfig {
 
   pub fn port(&self) -> u16 {
     self.port
-  }
-
-  pub fn verbose(&self) -> bool {
-    self.verbose
   }
 
   pub fn files(&self) -> &FileService {
@@ -66,5 +60,9 @@ impl AppConfig {
 
   pub fn root_logger(&self) -> &slog::Logger {
     &self.root_logger
+  }
+
+  pub fn verbose(&self) -> bool {
+    self.verbose
   }
 }

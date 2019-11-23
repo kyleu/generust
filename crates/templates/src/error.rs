@@ -23,8 +23,8 @@ pub fn exception(ctx: &RequestContext, router: &dyn Router, e: &anyhow::Error) -
         (e.to_string())
       }
       div.uk-text-lead {
-        @for e in e.chain().skip(1) {
-          div { (e.to_string()) }
+        @for ex in e.chain().skip(1) {
+          div { (ex.to_string()) }
         }
       }
       div.uk-margin-top {

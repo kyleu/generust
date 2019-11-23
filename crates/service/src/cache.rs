@@ -1,7 +1,6 @@
-use {{crate_name}}_core::ResponseMessage;
-
-use uuid::Uuid;
 use std::collections::{HashMap, HashSet};
+use uuid::Uuid;
+use {{crate_name}}_core::ResponseMessage;
 
 pub trait SendCallback: Sync + Send {
   fn send_message(&self, msg: ResponseMessage) -> ();
@@ -108,33 +107,43 @@ impl ConnectionCache {
     }
   }
 
+  pub fn send_connection(&self, id: &Uuid, msg: ResponseMessage) {
+    match &mut self.connections.get(id) {
+      Some(f) => {
+        slog::debug!(self.log, "Sending message [{:?}] to connection [{}]", msg, &id);
+        f.send_message(msg);
+      }
+      None => slog::warn!(self.log, "Message send attempted for missing connection [{}]", &id)
+    }
+  }
+
   pub fn send_channel(&self, key: &str, msg: ResponseMessage) {
+    self.send_channel_except(key, vec!(), msg)
+  }
+
+  pub fn send_channel_except(&self, key: &str, exclude: Vec<&Uuid>, msg: ResponseMessage) {
     match &mut self.channels.get(key) {
       Some(current) => {
+        let size = current.len();
+        let filtered: Vec<&Uuid> = current.iter().filter(|c| {
+          println!("{:?} / {} == {}", exclude, c, !exclude.contains(c));
+          !exclude.contains(c)
+        }).collect();
         slog::debug!(
           self.log,
-          "Sending message [{:?}] to [{}], which contains [{}] connections",
+          "Sending message [{:?}] to [{}], using [{} of {}] connections",
           msg,
           key,
-          current.len()
+          filtered.len(),
+          size
         );
-        let _: Vec<_> = current
+        let _: Vec<_> = filtered
           .iter()
           .map(|id| match self.connections.get(id) {
             Some(f) => f.send_message(msg.clone()),
             None => slog::warn!(self.log, "Unable to send message")
           })
           .collect();
-      }
-      None => ()
-    }
-  }
-
-  pub fn send_connection(&self, id: &Uuid, msg: ResponseMessage) {
-    match &mut self.connections.get(id) {
-      Some(f) => {
-        slog::debug!(self.log, "Sending message [{:?}] to connection [{}]", msg, id);
-        f.send_message(msg);
       }
       None => ()
     }

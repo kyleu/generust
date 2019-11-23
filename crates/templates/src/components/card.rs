@@ -1,5 +1,4 @@
 use maud::{html, Markup};
-
 use {{crate_name}}_service::RequestContext;
 
 pub(crate) fn card(ctx: &RequestContext, content: Markup) -> Markup {

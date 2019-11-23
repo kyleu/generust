@@ -1,5 +1,4 @@
 use maud::{html, Markup};
-
 use std::backtrace::Backtrace;
 
 #[derive(Debug)]

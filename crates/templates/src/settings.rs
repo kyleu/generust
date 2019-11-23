@@ -1,4 +1,3 @@
-
 use anyhow::Result;
 use maud::{html, Markup};
 use {{crate_name}}_service::{RequestContext, Router};

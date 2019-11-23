@@ -1,8 +1,3 @@
-use slog;
-use slog_async;
-use slog_json;
-use slog_term;
-
 use slog::Drain;
 
 pub(crate) fn root_logger(verbose: bool) -> slog::Logger {
