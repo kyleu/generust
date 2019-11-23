@@ -51,8 +51,7 @@ impl ClientContext {
     &self.socket
   }
 
-  #[allow(dead_code)]
-  pub(crate) fn profile(&self) -> &UserProfile {
+  pub(crate) fn user_profile(&self) -> &UserProfile {
     &self.profile
   }
 

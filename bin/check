@@ -3,7 +3,6 @@
 ## Runs code statistics, checks for outdated dependencies, then runs cargo-audit and clippy.
 ## Requires cargo components, see `bin/bootstrap-rust.txt` for a list
 
-set -e
 dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 project_dir=${dir}/..
 cd $project_dir
@@ -12,9 +11,9 @@ f () {
   echo "=== $1 counts ==="
   cargo clean -p "{{project-name}}-$1"
   cd "crates/$1"
-  cargo count --separator , --unsafe-statistics src
+  cargo count --separator , --unsafe-statistics src || echo " ::: Please install cargo-count"
   echo "=== $1 dependencies ==="
-  cargo outdated --depth=1
+  cargo outdated --depth=1 || echo " ::: Please install cargo-outdated"
   cd ../..
 }
 
@@ -30,20 +29,20 @@ f "templates"
 echo "=== {{project-name}} counts ==="
 cargo clean -p {{project-name}}
 cd "src"
-cargo count --separator , --unsafe-statistics
+cargo count --separator , --unsafe-statistics || echo " ::: Please install cargo-count"
 echo "=== {{project-name}} dependencies ==="
-cargo outdated --depth=1
+cargo outdated --depth=1 || echo " ::: Please install cargo-outdated"
 cd ..
 
 echo "=== (total) ==="
-cargo count --separator , --unsafe-statistics -a --exclude=$(cat .gitignore) --exclude=target --exclude=project --exclude=crates/assets/embed --exclude=crates/assets/stylesheets/uikit --exclude=crates/client/pkg --exclude=crates/client/www
-cargo deps --depth 1 --include-versions --dev-deps | dot -Tpng > "target/dependencies.png"
+cargo count --separator , --unsafe-statistics -a --exclude=$(cat .gitignore) --exclude=target --exclude=project --exclude=crates/assets/embed --exclude=crates/assets/stylesheets/uikit --exclude=crates/client/pkg --exclude=crates/client/www || echo " ::: Please install cargo-count"
+cargo deps --depth 1 --include-versions --dev-deps | dot -Tpng > "target/dependencies.png" || echo " ::: Please install cargo-deps"
 
 echo "=== Advisories ==="
-cargo audit
+cargo audit || echo " ::: Please install cargo-audit"
 
 echo "=== Linting ==="
-cargo clippy
+cargo clippy || echo " ::: Please install clippy"
 echo "=== Linting Client ==="
 cd crates/client
-cargo clippy
+cargo clippy || echo " ::: Please install clippy"

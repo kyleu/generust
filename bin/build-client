@@ -29,10 +29,8 @@ done
 
 mkdir -p ../../../assets/embed/wasm/
 
-set +e
 echo "=== wasm-opt ==="
-wasm-opt -O -o {{project-name}}.module.wasm {{project-name}}.module.wasm
-set -e
+wasm-opt -O -o {{project-name}}.module.wasm {{project-name}}.module.wasm || echo " ::: Please install binaryen"
 
 echo "=== copying files ==="
 cp {{project-name}}.module.wasm ../../../assets/embed/wasm/

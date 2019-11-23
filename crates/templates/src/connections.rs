@@ -54,7 +54,12 @@ pub fn channel_detail(ctx: &RequestContext, router: &dyn Router, key: &str) -> R
 }
 
 fn send_form() -> Markup {
-  let levels = vec!(NotificationLevel::Info, NotificationLevel::Success, NotificationLevel::Warn, NotificationLevel::Error);
+  let levels = vec![
+    NotificationLevel::Info,
+    NotificationLevel::Success,
+    NotificationLevel::Warn,
+    NotificationLevel::Error,
+  ];
   html!(
     form.uk-form-stacked action="" method="post" {
       div.uk-margin-small {

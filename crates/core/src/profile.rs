@@ -1,4 +1,3 @@
-
 use serde::{Deserialize, Serialize};
 
 /// The user's theme, initially just light and dark

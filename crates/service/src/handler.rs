@@ -44,18 +44,22 @@ impl MessageHandler {
     Vec::new()
   }
 
-  pub fn on_message(&self, msg: RequestMessage) -> Result<Vec<ResponseMessage>> {
-    let mut ret = Vec::new();
+  pub fn on_message(&self, msg: RequestMessage) -> Result<()> {
     match msg {
-      RequestMessage::Ping { v } => ret.push(ResponseMessage::Pong { v }),
-      msg => slog::warn!(self.log, "Unhandled RequestMessage [{:?}]", msg)
+      RequestMessage::Ping { v } => self.send_to_self(ResponseMessage::Pong { v }),
+      msg => {
+        slog::warn!(self.log, "Unhandled RequestMessage [{:?}]", msg);
+        Ok(())
+      }
     }
-    Ok(ret)
   }
-
-  pub fn on_error(&self) {}
 
   pub fn log(&self) -> &slog::Logger {
     &self.log
+  }
+
+  fn send_to_self(&self, msg: ResponseMessage) -> Result<()> {
+    self.ctx().app().send_connection(self.connection_id(), msg);
+    Ok(())
   }
 }

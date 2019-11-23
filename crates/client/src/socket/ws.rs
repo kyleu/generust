@@ -101,7 +101,7 @@ fn calc_url(src: &str) -> String {
     debug!("Using [test] channel [{}]", p);
     p
   } else {
-    format!("{}", cleaned)
+    cleaned.into()
   };
   format!("{}://{}/connect", protocol, path)
 }
