@@ -1,6 +1,7 @@
 use crate::cfg::AppConfig;
 
 use anyhow::Result;
+use uuid::Uuid;
 use {{crate_name}}_core::profile::UserProfile;
 
 /// Provides reverse routing of urls
@@ -18,7 +19,7 @@ pub trait Router {
 /// Contains information about the application and current user, along with common components
 pub struct RequestContext {
   app: AppConfig,
-  user_id: uuid::Uuid,
+  user_id: Uuid,
   user_profile: UserProfile,
   flash: Option<(String, String)>,
   log: slog::Logger
@@ -33,7 +34,7 @@ impl std::fmt::Debug for RequestContext {
 impl RequestContext {
   pub fn new(
     app: AppConfig,
-    user_id: uuid::Uuid,
+    user_id: Uuid,
     user_profile: UserProfile,
     log: slog::Logger,
     flash: Option<(String, String)>
@@ -52,7 +53,7 @@ impl RequestContext {
     &self.app
   }
 
-  pub fn user_id(&self) -> &uuid::Uuid {
+  pub fn user_id(&self) -> &Uuid {
     &self.user_id
   }
 

@@ -7,11 +7,23 @@ extern "C" {
   #[wasm_bindgen(js_namespace = console)]
   pub(crate) fn log(s: &str, style: &str);
 
+  // Custom methods
+  #[allow(unsafe_code)]
+  #[wasm_bindgen(js_namespace = {{crate_name}})]
+  pub(crate) fn activate_tab(id: &str, idx: usize);
+
   #[allow(unsafe_code)]
   #[wasm_bindgen(js_namespace = {{crate_name}})]
   pub(crate) fn notify(level: &str, content: &str);
-}
 
+  #[allow(unsafe_code)]
+  #[wasm_bindgen(js_namespace = {{crate_name}})]
+  pub(crate) fn show_modal(id: &str);
+
+  #[allow(unsafe_code)]
+  #[wasm_bindgen(js_namespace = {{crate_name}})]
+  pub(crate) fn wire_textarea(id: &str);
+}
 #[wasm_bindgen]
 #[derive(Debug)]
 pub struct JsClient {

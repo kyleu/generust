@@ -11,8 +11,10 @@ impl EventHandler {
       "send-ping" => ctx.send(RequestMessage::Ping {
         v: js_sys::Date::now() as i64
       }),
-      _ => warn!("Unhandled event [{}] with [k:{}], [v:{}]", t, k, v)
+      _ => {
+        warn!("Unhandled event [{}] with [k:{}], [v:{}]", t, k, v);
+        Ok(())
+      }
     }
-    Ok(())
   }
 }

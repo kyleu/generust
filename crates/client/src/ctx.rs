@@ -14,6 +14,7 @@ pub(crate) struct ClientContext {
   document: Document,
   socket: ClientSocket,
   connection_id: Option<Uuid>,
+  user_id: Option<Uuid>,
   user_profile: UserProfile
 }
 
@@ -32,6 +33,7 @@ impl ClientContext {
       document,
       socket,
       connection_id: None,
+      user_id: None,
       user_profile
     }));
 
@@ -51,13 +53,22 @@ impl ClientContext {
     &self.socket
   }
 
+  pub(crate) fn _connection_id(&self) -> &Option<Uuid> {
+    &self.connection_id
+  }
+
+  pub(crate) fn _user_id(&self) -> &Option<Uuid> {
+    &self.user_id
+  }
+
   pub(crate) fn user_profile(&self) -> &UserProfile {
     &self.user_profile
   }
 
-  pub(crate) fn on_connected(&mut self, connection_id: Uuid, user_profile: UserProfile, binary: bool) {
+  pub(crate) fn on_connected(&mut self, connection_id: Uuid, user_id: Uuid, user_profile: UserProfile, binary: bool) {
     self.socket.set_binary(binary);
     self.connection_id = Some(connection_id);
+    self.user_id = Some(user_id);
     self.user_profile = user_profile;
   }
 
@@ -65,8 +76,9 @@ impl ClientContext {
     Ok(())
   }
 
-  pub(crate) fn send(&self, rm: RequestMessage) {
+  pub(crate) fn send(&self, rm: RequestMessage) -> Result<()> {
     self.socket.send(rm);
+    Ok(())
   }
 
   pub(crate) fn on_event(&mut self, t: &str, k: &str, v: &str) -> Result<()> {

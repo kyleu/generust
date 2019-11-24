@@ -10,6 +10,7 @@ use uuid::Uuid;
 pub enum ResponseMessage {
   Connected {
     connection_id: Uuid,
+    user_id: Uuid,
     u: Box<crate::profile::UserProfile>,
     b: bool
   },

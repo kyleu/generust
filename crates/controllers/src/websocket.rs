@@ -6,6 +6,7 @@ use actix_web::{web, Error, HttpRequest, HttpResponse};
 use actix_web_actors::ws::WebsocketContext;
 use actix_web_actors::ws::{Message, ProtocolError};
 use anyhow::Result;
+use uuid::Uuid;
 use {{crate_name}}_core::{RequestMessage, ResponseMessage};
 use {{crate_name}}_service::handler::MessageHandler;
 use {{crate_name}}_service::AppConfig;
@@ -124,7 +125,7 @@ pub fn connect(
     _ => !cfg.verbose()
   };
 
-  let id = uuid::Uuid::new_v4();
+  let id = Uuid::new_v4();
   let handler = MessageHandler::new(id, key.clone(), ctx);
   let socket = ServerSocket::new(binary, handler);
   actix_web_actors::ws::start(socket, &req, stream)

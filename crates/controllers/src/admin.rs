@@ -3,7 +3,7 @@ use crate::util::ctx::add_flash;
 use actix_session::Session;
 use actix_web::web::{Data, Form, Path};
 use actix_web::{HttpRequest, HttpResponse};
-
+use uuid::Uuid;
 use {{crate_name}}_core::ResponseMessage;
 use {{crate_name}}_core::util::NotificationLevel;
 use {{crate_name}}_service::AppConfig;
@@ -28,14 +28,14 @@ pub struct SendForm {
 }
 
 /// Available at `/admin/conn/{id}`
-pub fn connection_detail(session: Session, cfg: Data<AppConfig>, id: Path<uuid::Uuid>, req: HttpRequest) -> HttpResponse {
+pub fn connection_detail(session: Session, cfg: Data<AppConfig>, id: Path<Uuid>, req: HttpRequest) -> HttpResponse {
   crate::act(&session, &cfg, req, |ctx, router| {
     {{crate_name}}_templates::connections::connection_detail(&ctx, router, *id)
   })
 }
 
 /// Available by posting to `/admin/conn/{id}`
-pub fn connection_send(session: Session, cfg: Data<AppConfig>, id: Path<uuid::Uuid>, req: HttpRequest, f: Form<SendForm>) -> HttpResponse {
+pub fn connection_send(session: Session, cfg: Data<AppConfig>, id: Path<Uuid>, req: HttpRequest, f: Form<SendForm>) -> HttpResponse {
   crate::redir(&session, &cfg, req, |ctx, router| {
     let msg = ResponseMessage::Notification {
       level: f.level.clone(),
