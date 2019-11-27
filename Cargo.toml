@@ -25,6 +25,11 @@ members = [
 [lib]
 crate-type = ["dylib", "staticlib", "rlib"]
 name = "{{crate_name}}"
+path = "src/lib.rs"
+
+[[bin]]
+name = "{{crate_name}}"
+path = "src/main.rs"
 
 [dependencies]
 actix-http = "0.2.11"

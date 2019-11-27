@@ -52,15 +52,17 @@ pub extern "C" fn libgo() {
   };
 }
 
+/// Android function
 #[cfg(target_os = "android")]
 #[allow(non_snake_case)]
 pub mod android {
-  extern crate jni;
+  use jni;
 
   use self::jni::objects::JClass;
   use self::jni::JNIEnv;
   use super::go;
 
+  /// JNI entrypoint, calls go()
   #[no_mangle]
   #[allow(unsafe_code)]
   pub unsafe extern "C" fn Java_com_{{crate_name}}_{{crate_name}}_{{crate_name}}_go(env: JNIEnv<'_>, _: JClass<'_>) {

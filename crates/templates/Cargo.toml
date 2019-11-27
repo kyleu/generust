@@ -17,4 +17,4 @@ anyhow = "1.0.23"
 maud = "0.21.0"
 num_cpus = "1.11.1"
 serde = { version = "1.0.102", features = ["derive"] }
-uuid = { version = "0.7.4", features = ["serde", "v4", "wasm-bindgen"] }
+uuid = { version = "0.8.1", features = ["serde", "v4", "wasm-bindgen"] }

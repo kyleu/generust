@@ -48,7 +48,7 @@ matrix:
     # Android
     - env: TARGET=aarch64-linux-android DISABLE_TESTS=1
     # - env: TARGET=arm-linux-androideabi DISABLE_TESTS=1
-    # - env: TARGET=armv7-linux-androideabi DISABLE_TESTS=1
+    - env: TARGET=armv7-linux-androideabi DISABLE_TESTS=1
     # - env: TARGET=i686-linux-android DISABLE_TESTS=1
     - env: TARGET=x86_64-linux-android DISABLE_TESTS=1
 
