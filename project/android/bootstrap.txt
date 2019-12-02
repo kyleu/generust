@@ -1,0 +1,15 @@
+# https://mozilla.github.io/firefox-browser-architecture/experiments/2017-09-21-rust-on-android.html
+
+cargo build --target aarch64-linux-android --release
+cargo build --target armv7-linux-androideabi --release
+cargo build --target i686-linux-android --release
+
+cd app/src/main
+
+rm -f jniLibs/arm64/libgreetings.so
+rm -f jniLibs/armeabi/libgreetings.so
+rm -f jniLibs/x86/libgreetings.so
+
+ln -s ../../../../../../../cargo/target/aarch64-linux-android/release/libgreetings.so jniLibs/arm64/libgreetings.so
+ln -s ../../../../../../../cargo/target/armv7-linux-androideabi/release/libgreetings.so jniLibs/armeabi/libgreetings.so
+ln -s ../../../../../../../cargo/target/i686-linux-android/release/libgreetings.so jniLibs/x86/libgreetings.so
