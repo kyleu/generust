@@ -43,6 +43,7 @@ pub(crate) fn cfg_from_args() -> AppConfig {
   AppConfig::new(task.into(), address.into(), port, cfg_dir, log, verbose)
 }
 
+#[cfg(not(target_os = "android"))]
 fn default_cfg_dir(log: &slog::Logger) -> String {
   let app_info = app_dirs2::AppInfo {
     name: {{crate_name}}_core::APPNAME,
@@ -56,4 +57,9 @@ fn default_cfg_dir(log: &slog::Logger) -> String {
     }
   };
   ret
+}
+
+#[cfg(target_os = "android")]
+fn default_cfg_dir(_log: &slog::Logger) -> String {
+  format!("/data/user/0/{}/files", {{crate_name}}_core::APPNAME)
 }

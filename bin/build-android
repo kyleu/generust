@@ -1,0 +1,26 @@
+#!/bin/bash
+
+## Builds the JNI native library for the top three Android platforms
+## Requires an updated Android SDK installation
+
+set -e
+dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+project_dir=${dir}/..
+cd $project_dir
+
+echo "=== Building x86 ==="
+PATH=$PATH:$NDK/x86/bin;cargo build --target i686-linux-android --release
+mkdir -p project/android/app/src/main/jniLibs/x86
+cp target/i686-linux-android/release/lib{{crate_name}}.so project/android/app/src/main/jniLibs/x86
+
+echo "=== Building arm7 ==="
+PATH=$PATH:$NDK/arm/bin;cargo build --target armv7-linux-androideabi --release
+mkdir -p project/android/app/src/main/jniLibs/armeabi
+cp target/i686-linux-android/release/lib{{crate_name}}.so project/android/app/src/main/jniLibs/armeabi
+
+echo "=== Building arm64 ==="
+PATH=$PATH:$NDK/arm64/bin;cargo build --target aarch64-linux-android --release
+mkdir -p project/android/app/src/main/jniLibs/arm64
+cp target/aarch64-linux-android/release/lib{{crate_name}}.so project/android/app/src/main/jniLibs/arm64
+
+echo "=== Complete ==="

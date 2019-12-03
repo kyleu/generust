@@ -313,7 +313,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../target/universal/release";
-				PRODUCT_BUNDLE_IDENTIFIER = com.kyleu.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.{{crate_name}}.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/ios-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;
@@ -334,7 +334,7 @@
 					"@executable_path/Frameworks",
 				);
 				LIBRARY_SEARCH_PATHS = "$(PROJECT_DIR)/../../target/universal/release";
-				PRODUCT_BUNDLE_IDENTIFIER = com.kyleu.ios;
+				PRODUCT_BUNDLE_IDENTIFIER = com.{{crate_name}}.ios;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_OBJC_BRIDGING_HEADER = "$(PROJECT_DIR)/ios-Bridging-Header.h";
 				SWIFT_VERSION = 5.0;

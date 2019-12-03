@@ -1,4 +1,4 @@
-package com.kyleu;
+package com.{{crate_name}};
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import com.kyleu.{{crate_name}}.{{crate_name}};
+import com.{{crate_name}}.App;
 
 public class MainActivity extends Activity {
     static {
@@ -20,7 +20,7 @@ public class MainActivity extends Activity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        int port = new {{crate_name}}().start_server();
+        int port = new App().start_server();
 
         setContentView(R.layout.activity_main);
         mWebView = findViewById(R.id.activity_main_webview);

@@ -4,7 +4,7 @@ android {
     compileSdkVersion 29
 
     defaultConfig {
-        applicationId "com.kyleu"
+        applicationId "com.{{crate_name}}"
         minSdkVersion 23
         targetSdkVersion 29
         versionCode 1

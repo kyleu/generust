@@ -43,6 +43,21 @@ pub fn go() -> anyhow::Result<()> {
   crate::app::start(cfg)
 }
 
+/// Async application entrypoint, creates and starts the server, returning the port
+pub fn go_async() -> u16 {
+  let (port_tx, port_rx) = std::sync::mpsc::channel();
+  let cfg = crate::cfg::cfg_from_args();
+
+  let _ = std::thread::spawn(move || {
+    match crate::server::start_server(cfg, port_tx){
+      Ok(_) => println!("Successfully started [{}]", {{crate_name}}_core::APPNAME),
+      Err(e) => println!("Error starting [{}]: {}", {{crate_name}}_core::APPNAME, e)
+    };
+  });
+
+  port_rx.recv().unwrap()
+}
+
 /// External app entrypoint, calls `go()` directly and swallows errors
 #[no_mangle]
 pub extern "C" fn libgo() {
@@ -56,17 +71,12 @@ pub extern "C" fn libgo() {
 #[cfg(target_os = "android")]
 #[allow(non_snake_case)]
 pub mod android {
-  use jni;
-
-  use self::jni::objects::JClass;
-  use self::jni::JNIEnv;
-  use super::go;
+  use libc;
 
   /// JNI entrypoint, calls go()
   #[no_mangle]
   #[allow(unsafe_code)]
-  pub unsafe extern "C" fn Java_com_{{crate_name}}_{{crate_name}}_{{crate_name}}_go(env: JNIEnv<'_>, _: JClass<'_>) {
-    println!("Android!");
-    go();
+  pub unsafe extern "C" fn Java_com_{{crate_name}}_App_go() -> libc::c_int {
+    crate::go_async() as i32
   }
 }

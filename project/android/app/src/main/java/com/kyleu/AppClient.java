@@ -1,4 +1,4 @@
-package com.kyleu;
+package com.{{crate_name}};
 
 import android.content.Intent;
 import android.net.Uri;
