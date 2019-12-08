@@ -1,14 +1,16 @@
-use std::collections::{HashMap, HashSet};
-use uuid::Uuid;
 use {{crate_name}}_core::ResponseMessage;
+
+use std::collections::{HashMap, HashSet};
+use std::sync::{Arc, RwLock};
+use uuid::Uuid;
 
 pub trait SendCallback: Sync + Send {
   fn send_message(&self, msg: ResponseMessage) -> ();
 }
 
 pub struct ConnectionCache {
-  connections: HashMap<Uuid, Box<dyn SendCallback>>,
-  channels: HashMap<String, HashSet<Uuid>>,
+  connections: Arc<RwLock<HashMap<Uuid, Box<dyn SendCallback>>>>,
+  channels: Arc<RwLock<HashMap<String, HashSet<Uuid>>>>,
   log: slog::Logger
 }
 
@@ -17,8 +19,8 @@ impl std::fmt::Debug for ConnectionCache {
     write!(
       f,
       "ConnectionCache [{}] connections, [{}] channels",
-      &self.connections.len(),
-      &self.channels.len()
+      &self.connections.read().unwrap().len(),
+      &self.channels.read().unwrap().len()
     )
   }
 }
@@ -28,35 +30,32 @@ impl ConnectionCache {
     let log = log.new(slog::o!("service" => "connection-cache"));
     slog::debug!(log, "Connection cache created");
     ConnectionCache {
-      connections: HashMap::new(),
-      channels: HashMap::new(),
+      connections: Arc::new(RwLock::new(HashMap::new())),
+      channels: Arc::new(RwLock::new(HashMap::new())),
       log
     }
   }
 
   pub fn conn_list(&self) -> Vec<Uuid> {
-    let mut conns: Vec<Uuid> = self.connections.keys().copied().collect();
+    let mut conns: Vec<Uuid> = self.connections.read().unwrap().keys().copied().collect();
     conns.sort();
     conns
   }
 
   pub fn channel_list(&self) -> Vec<(String, Vec<Uuid>)> {
-    let mut channels: Vec<(String, Vec<Uuid>)> = self
-      .channels
-      .iter()
-      .map(|v| {
-        let mut ids: Vec<Uuid> = v.1.iter().copied().collect();
-        ids.sort();
-        (v.0.clone(), ids)
-      })
-      .collect();
+    let mut channels: Vec<(String, Vec<Uuid>)> = self.channels.read().unwrap().iter().map(|v| {
+      let mut ids: Vec<Uuid> = v.1.iter().copied().collect();
+      ids.sort();
+      (v.0.clone(), ids)
+    }).collect();
     channels.sort();
     channels
   }
 
-  pub fn add<F>(&mut self, key: &str, id: Uuid, f: Box<dyn SendCallback>) {
-    let _ = self.connections.insert(id, f);
-    match self.channels.get_mut(key) {
+  pub fn add<F>(&self, key: &str, id: Uuid, f: Box<dyn SendCallback>) {
+    let _ = self.connections.write().unwrap().insert(id, f);
+    let mut chan = self.channels.write().unwrap();
+    match chan.get_mut(key) {
       Some(current) => {
         slog::debug!(
           self.log,
@@ -70,14 +69,15 @@ impl ConnectionCache {
       None => {
         slog::debug!(self.log, "Adding first connection [{}] to [{}]", id, key);
         let set: HashSet<Uuid> = vec![id].into_iter().collect();
-        let _ = self.channels.insert(key.into(), set);
+        let _ = chan.insert(key.into(), set);
       }
     }
   }
 
-  pub fn remove(&mut self, key: &str, id: Uuid) {
-    let _ = self.connections.remove(&id);
-    match self.channels.get_mut(key) {
+  pub fn remove(&self, key: &str, id: Uuid) {
+    let _ = self.connections.write().unwrap().remove(&id);
+    let mut chan = self.channels.write().unwrap();
+    match chan.get_mut(key) {
       Some(current) => {
         if current.contains(&id) {
           let _ = current.remove(&id);
@@ -108,7 +108,7 @@ impl ConnectionCache {
   }
 
   pub fn send_connection(&self, id: &Uuid, msg: ResponseMessage) {
-    match &mut self.connections.get(id) {
+    match &mut self.connections.read().unwrap().get(id) {
       Some(f) => {
         slog::debug!(self.log, "Sending message [{:?}] to connection [{}]", msg, &id);
         f.send_message(msg);
@@ -118,17 +118,20 @@ impl ConnectionCache {
   }
 
   pub fn send_channel(&self, key: &str, msg: ResponseMessage) {
-    self.send_channel_except(key, vec!(), msg)
+    self.send_channel_except(key, vec![], msg)
   }
 
   pub fn send_channel_except(&self, key: &str, exclude: Vec<&Uuid>, msg: ResponseMessage) {
-    match &mut self.channels.get(key) {
+    match &mut self.channels.read().unwrap().get(key) {
       Some(current) => {
         let size = current.len();
-        let filtered: Vec<&Uuid> = current.iter().filter(|c| {
-          println!("{:?} / {} == {}", exclude, c, !exclude.contains(c));
-          !exclude.contains(c)
-        }).collect();
+        let filtered: Vec<&Uuid> = current
+          .iter()
+          .filter(|c| {
+            println!("{:?} / {} == {}", exclude, c, !exclude.contains(c));
+            !exclude.contains(c)
+          })
+          .collect();
         slog::debug!(
           self.log,
           "Sending message [{:?}] to [{}], using [{} of {}] connections",
@@ -139,7 +142,7 @@ impl ConnectionCache {
         );
         let _: Vec<_> = filtered
           .iter()
-          .map(|id| match self.connections.get(id) {
+          .map(|id| match self.connections.read().unwrap().get(id) {
             Some(f) => f.send_message(msg.clone()),
             None => slog::warn!(self.log, "Unable to send message")
           })

@@ -61,7 +61,7 @@ impl Actor for ServerSocket {
   fn started(&mut self, wsc: &mut Self::Context) {
     {
       let sender = Box::new(ServerSender::new(wsc.address()));
-      let mut connections = self.handler.ctx().app().connections().write().unwrap();
+      let connections = self.handler.ctx().app().connections();
       connections.add::<ServerSender>(self.handler.channel_id(), *self.handler().connection_id(), sender);
     }
     let msgs = match self.handler.on_open() {
@@ -80,7 +80,7 @@ impl Actor for ServerSocket {
   }
 
   fn stopping(&mut self, _ctx: &mut Self::Context) -> actix::Running {
-    let mut connections = self.handler.ctx().app().connections().write().unwrap();
+    let connections = self.handler.ctx().app().connections();
     connections.remove(self.handler.channel_id(), *self.handler().connection_id());
     actix::Running::Stop
   }

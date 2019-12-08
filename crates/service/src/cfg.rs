@@ -1,9 +1,7 @@
-use crate::cache::ConnectionCache;
+use crate::conn::ConnectionCache;
 use crate::files::FileService;
 
-use {{crate_name}}_core::ResponseMessage;
-use std::sync::{Arc, RwLock};
-use uuid::Uuid;
+use std::sync::Arc;
 
 /// Contains information about the running application
 #[derive(Clone, Debug)]
@@ -12,7 +10,7 @@ pub struct AppConfig {
   address: String,
   port: u16,
   files: Arc<FileService>,
-  connections: Arc<RwLock<ConnectionCache>>,
+  connections: Arc<ConnectionCache>,
   root_logger: slog::Logger,
   verbose: bool
 }
@@ -25,7 +23,7 @@ impl AppConfig {
       address,
       port,
       files: Arc::clone(&files),
-      connections: Arc::new(RwLock::new(ConnectionCache::new(&root_logger))),
+      connections: Arc::new(ConnectionCache::new(&root_logger)),
       root_logger,
       verbose
     }
@@ -47,20 +45,8 @@ impl AppConfig {
     &self.files
   }
 
-  pub fn connections(&self) -> &RwLock<ConnectionCache> {
+  pub fn connections(&self) -> &ConnectionCache {
     &self.connections
-  }
-
-  pub fn send_connection(&self, id: &Uuid, msg: ResponseMessage) {
-    self.connections().read().unwrap().send_connection(id, msg);
-  }
-
-  pub fn send_channel(&self, key: &str, msg: ResponseMessage) {
-    self.connections().read().unwrap().send_channel(key, msg);
-  }
-
-  pub fn send_channel_except(&self, key: &str,  exclude: Vec<&Uuid>, msg: ResponseMessage) {
-    self.connections().read().unwrap().send_channel_except(key, exclude, msg);
   }
 
   pub fn root_logger(&self) -> &slog::Logger {

@@ -16,8 +16,7 @@ pub fn list(session: Session, cfg: Data<AppConfig>, req: HttpRequest) -> HttpRes
 /// Available at `/admin/conn`
 pub fn connections(session: Session, cfg: Data<AppConfig>, req: HttpRequest) -> HttpResponse {
   crate::act(&session, &cfg, req, |ctx, router| {
-    let conn = ctx.app().connections().read().unwrap();
-    {{crate_name}}_templates::connections::connections(&ctx, router, conn.conn_list(), conn.channel_list())
+    {{crate_name}}_templates::connections::connections(&ctx, router, ctx.app().connections().conn_list(), ctx.app().connections().channel_list())
   })
 }
 
@@ -41,7 +40,6 @@ pub fn connection_send(session: Session, cfg: Data<AppConfig>, id: Path<Uuid>, r
       level: f.level.clone(),
       content: f.content.clone()
     };
-    let conn = ctx.app().connections().read().unwrap();
     slog::info!(
       ctx.log(),
       "Sent admin message [{}::{}] to connection [{}]",
@@ -49,7 +47,7 @@ pub fn connection_send(session: Session, cfg: Data<AppConfig>, id: Path<Uuid>, r
       &f.content,
       &id
     );
-    conn.send_connection(&id, msg);
+    ctx.app().connections().send_connection(&id, msg);
     add_flash(&session, ctx.log(), "success", &format!("Sent message to connection [{}]", &id));
     router.route_simple("admin.connections")
   })
@@ -69,7 +67,6 @@ pub fn channel_send(session: Session, cfg: Data<AppConfig>, key: Path<String>, r
       level: f.level.clone(),
       content: f.content.clone()
     };
-    let conn = ctx.app().connections().read().unwrap();
     slog::info!(
       ctx.log(),
       "Sending admin message [{}::{}] to channel [{}]",
@@ -77,7 +74,7 @@ pub fn channel_send(session: Session, cfg: Data<AppConfig>, key: Path<String>, r
       &f.content,
       &key
     );
-    conn.send_channel(&key, msg);
+    ctx.app().connections().send_channel(&key, msg);
     add_flash(&session, ctx.log(), "success", &format!("Sent message to channel [{}]", &key));
     router.route_simple("admin.connections")
   })
