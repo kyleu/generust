@@ -17,7 +17,7 @@ crate-type = ["cdylib", "rlib"]
 [dependencies]
 {{project-name}}-core = { version = "0.0.1", path = "../core" }
 
-anyhow = "1.0.23"
+anyhow = "1.0.25"
 console_error_panic_hook = "0.1.6"
 instant = "0.1.2"
 js-sys = "0.3.32"

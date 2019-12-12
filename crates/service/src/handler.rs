@@ -15,9 +15,8 @@ pub struct MessageHandler {
 
 impl MessageHandler {
   pub fn new(connection_id: Uuid, channel_id: String, ctx: RequestContext) -> MessageHandler {
-    let log = ctx
-      .log()
-      .new(slog::o!("connection" => format!("{}", connection_id), "service" => "message_handler", "channel" => channel_id.clone()));
+    let o = slog::o!("connection" => format!("{}", connection_id), "service" => "message_handler", "channel" => channel_id.clone());
+    let log = ctx.log().new(o);
     MessageHandler { connection_id, channel_id, ctx, log }
   }
 

@@ -9,4 +9,4 @@ repository = "https://github.com/{{project-name}}/{{project-name}}"
 license = "MIT"
 
 [dependencies]
-rust-embed = { version = "5.1.0", features = ["interpolate-folder-path"] }
+rust-embed = { version = "5.2.0", features = ["interpolate-folder-path"] }
