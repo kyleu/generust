@@ -4,7 +4,7 @@ use {{crate_name}}_core::profile::Theme;
 use {{crate_name}}_service::{RequestContext, Router};
 
 pub fn profile(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
-  let content = html! {
+  let content = &html! {
     div.uk-section.uk-section-small {
       div.uk-container {
         div.uk-text-center {
@@ -13,7 +13,7 @@ pub fn profile(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
           }
         }
         div.uk-margin-top.uk-container.uk-container-small {
-          (crate::card(&ctx, html! {
+          (crate::card(ctx, &html! {
             form action="" method="post" {
               fieldset.uk-fieldset {
                 div.uk-margin {
@@ -34,7 +34,7 @@ pub fn profile(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
                 div.uk-margin {
                   label { "Navbar Color" }
                   div#colors {
-                    @for c in crate::components::colors::COLORS.iter() {
+                    @for c in &crate::components::colors::COLORS {
                       (nav_swatch(ctx.user_profile(), c))
                     }
                   }
@@ -47,7 +47,7 @@ pub fn profile(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
                     " Color"
                   }
                   div#colors {
-                    @for c in crate::components::colors::COLORS.iter() {
+                    @for c in &crate::components::colors::COLORS {
                       (link_swatch(ctx.user_profile(), c))
                     }
                   }

@@ -12,11 +12,12 @@ pub(crate) struct ClientSocket {
 }
 
 impl ClientSocket {
-  pub(crate) fn new(curr_url: &str, binary: bool) -> Result<ClientSocket> {
+  pub(crate) fn new(curr_url: &str, binary: bool) -> Result<Self> {
     let url = calc_url(curr_url);
     let ws = WebSocket::new(&url).map_err(|e| anyhow::anyhow!(format!("Error creating WebSocket: {:?}", e)))?;
     ws.set_binary_type(web_sys::BinaryType::Arraybuffer);
-    Ok(ClientSocket { url, binary, ws })
+    crate::js::wire_onbeforeunload(&ws);
+    Ok(Self { url, binary, ws })
   }
 
   pub(crate) fn set_callbacks(
@@ -45,7 +46,7 @@ impl ClientSocket {
     self.binary = b;
   }
 
-  pub(crate) fn send(&self, msg: RequestMessage) {
+  pub(crate) fn send(&self, msg: &RequestMessage) {
     if self.binary {
       self.send_binary(msg);
     } else {
@@ -53,7 +54,7 @@ impl ClientSocket {
     }
   }
 
-  pub(crate) fn send_json(&self, req: RequestMessage) {
+  pub(crate) fn send_json(&self, req: &RequestMessage) {
     match req.to_json() {
       Ok(j) => match &self.ws.send_with_str(&j) {
         Ok(_) => (),
@@ -65,7 +66,7 @@ impl ClientSocket {
     };
   }
 
-  pub(crate) fn send_binary(&self, msg: RequestMessage) {
+  pub(crate) fn send_binary(&self, msg: &RequestMessage) {
     match msg.to_binary() {
       Ok(mut v) => {
         let v: &mut [u8] = &mut v[..];

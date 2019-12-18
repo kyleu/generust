@@ -17,10 +17,10 @@ pub enum NotificationLevel {
 impl std::fmt::Display for NotificationLevel {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     let s = match self {
-      NotificationLevel::Info => "Info",
-      NotificationLevel::Success => "Success",
-      NotificationLevel::Warn => "Warn",
-      NotificationLevel::Error => "Error"
+      Self::Info => "Info",
+      Self::Success => "Success",
+      Self::Warn => "Warn",
+      Self::Error => "Error"
     };
     write!(f, "{}", s)
   }

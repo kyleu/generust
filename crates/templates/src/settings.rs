@@ -27,5 +27,5 @@ pub fn settings(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
       }
     }
   };
-  crate::simple(ctx, router, "Settings", content)
+  crate::simple(ctx, router, "Settings", &content)
 }

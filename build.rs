@@ -1,7 +1,8 @@
 fn main() {
   if cfg!(target_os = "windows") {
     let mut res = winres::WindowsResource::new();
-    res.set_icon("project/windows/app.ico");
-    res.compile().unwrap();
+    let path = "project/windows/app.ico";
+    res.set_icon(path);
+    res.compile().expect("Can't compile Windows icon");
   }
 }

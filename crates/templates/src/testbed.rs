@@ -3,7 +3,7 @@ use maud::{html, Markup};
 use {{crate_name}}_service::{RequestContext, Router};
 use {{crate_name}}_core::build_info;
 
-fn container(ctx: &RequestContext, router: &dyn Router, result: &str, content: Markup) -> Result<Markup> {
+fn container(ctx: &RequestContext, router: &dyn Router, result: &str, content: &Markup) -> Result<Markup> {
   let content = html! {
     div.uk-text-center {
       h1.uk-heading-hero { "Testbed" }
@@ -13,11 +13,11 @@ fn container(ctx: &RequestContext, router: &dyn Router, result: &str, content: M
       (content)
     }
   };
-  crate::section(ctx, router, "Testbed", content)
+  crate::section(ctx, router, "Testbed", &content)
 }
 
 pub fn dump(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
-  let content = crate::card(ctx, html! {
+  let content = crate::card(ctx, &html! {
     table.uk-table.uk-table-divider.uk-text-left {
       tbody {
         tr {
@@ -55,17 +55,17 @@ pub fn dump(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
       }
     }
   });
-  container(ctx, router, "Dump", content)
+  container(ctx, router, "Dump", &content)
 }
 
 pub fn gallery(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
-  let content = crate::gallery::gallery(&ctx);
-  container(ctx, router, "Gallery", content)
+  let content = crate::gallery::gallery(ctx);
+  container(ctx, router, "Gallery", &content)
 }
 
 pub fn prototype(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
   let content = html! { "Prototype!" };
-  crate::components::page::page(ctx, router, "Prototype!", content)
+  crate::components::page::page(ctx, router, "Prototype!", &content)
 }
 
 pub fn scroll(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
@@ -74,5 +74,5 @@ pub fn scroll(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
       "This is a tall block, test scrolling if you'd like "
     }
   };
-  container(ctx, router, "Scroll", content)
+  container(ctx, router, "Scroll", &content)
 }

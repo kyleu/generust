@@ -8,7 +8,7 @@ use {{crate_name}}_service::Router;
 
 pub(crate) fn act<F>(session: &Session, cfg: &Data<AppConfig>, req: HttpRequest, f: F) -> HttpResponse
 where F: Fn(&RequestContext, &dyn Router) -> Result<maud::Markup> {
-  let ctx = crate::req_context(&session, &cfg, "index");
+  let ctx = crate::req_context(session, cfg, "index");
   let router = crate::util::router::RequestRouter::new(req);
   rsp(&ctx, &router, f(&ctx, &router))
 }
@@ -25,7 +25,7 @@ pub(crate) fn rsp(ctx: &RequestContext, router: &dyn Router, res: Result<maud::P
 
 pub(crate) fn redir<F>(session: &Session, cfg: &Data<AppConfig>, req: HttpRequest, f: F) -> HttpResponse
 where F: Fn(&RequestContext, &dyn Router) -> Result<String> {
-  let ctx = crate::req_context(&session, &cfg, "index");
+  let ctx = crate::req_context(session, cfg, "index");
   let router = crate::util::router::RequestRouter::new(req);
   match f(&ctx, &router) {
     Ok(path) => HttpResponse::SeeOther().header(LOCATION, path).finish().into_body(),

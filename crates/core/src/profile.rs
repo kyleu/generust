@@ -12,8 +12,8 @@ impl std::str::FromStr for Theme {
 
   fn from_str(s: &str) -> anyhow::Result<Self> {
     match s {
-      "Light" => Ok(Theme::Light),
-      "Dark" => Ok(Theme::Dark),
+      "Light" => Ok(Self::Light),
+      "Dark" => Ok(Self::Dark),
       _ => Err(anyhow::anyhow!("Invalid theme [{}]", s))
     }
   }
@@ -22,36 +22,36 @@ impl std::str::FromStr for Theme {
 impl std::fmt::Display for Theme {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
     let s = match self {
-      Theme::Light => "Light",
-      Theme::Dark => "Dark"
+      Self::Light => "Light",
+      Self::Dark => "Dark"
     };
     write!(f, "{}", s)
   }
 }
 
 impl Theme {
-  pub fn all() -> Vec<Theme> {
-    vec![Theme::Light, Theme::Dark]
+  pub fn all() -> Vec<Self> {
+    vec![Self::Light, Self::Dark]
   }
 
   pub fn default_navbar_color(&self) -> String {
     match self {
-      Theme::Light => "#263238".into(),
-      Theme::Dark => "#263238".into()
+      Self::Light => "#89b6cc".into(),
+      Self::Dark => "#263238".into()
     }
   }
 
   pub fn body_class(&self) -> &str {
     match self {
-      Theme::Light => "uk-dark",
-      Theme::Dark => "uk-light"
+      Self::Light => "uk-dark",
+      Self::Dark => "uk-light"
     }
   }
 
   pub fn card_class(&self) -> &str {
     match self {
-      Theme::Light => "uk-card-default",
-      Theme::Dark => "uk-card-secondary"
+      Self::Light => "uk-card-default",
+      Self::Dark => "uk-card-secondary"
     }
   }
 }
@@ -65,9 +65,15 @@ pub struct UserProfile {
   link_color: String
 }
 
+impl std::fmt::Display for UserProfile {
+  fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+    write!(f, "{}:{}", self.name, self.theme)
+  }
+}
+
 impl Default for UserProfile {
-  fn default() -> UserProfile {
-    UserProfile {
+  fn default() -> Self {
+    Self {
       name: "Guest".into(),
       theme: Theme::Light,
       nav_color: "bluegrey".into(),
@@ -77,19 +83,19 @@ impl Default for UserProfile {
 }
 
 impl UserProfile {
-  pub fn name(&self) -> &String {
+  pub const fn name(&self) -> &String {
     &self.name
   }
 
-  pub fn theme(&self) -> &Theme {
+  pub const fn theme(&self) -> &Theme {
     &self.theme
   }
 
-  pub fn nav_color(&self) -> &String {
+  pub const fn nav_color(&self) -> &String {
     &self.nav_color
   }
 
-  pub fn link_color(&self) -> &String {
+  pub const fn link_color(&self) -> &String {
     &self.link_color
   }
 

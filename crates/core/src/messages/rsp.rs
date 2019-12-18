@@ -28,16 +28,16 @@ pub enum ResponseMessage {
 }
 
 impl ResponseMessage {
-  pub fn from_json(s: &str) -> Result<ResponseMessage> {
-    serde_json::from_str(&s).with_context(|| "Can't decode json ResponseMessage")
+  pub fn from_json(s: &str) -> Result<Self> {
+    serde_json::from_str(s).with_context(|| "Can't decode json ResponseMessage")
   }
 
   pub fn to_json(&self) -> Result<String> {
     serde_json::to_string_pretty(&self).with_context(|| "Can't encode json ResponseMessage")
   }
 
-  pub fn from_binary(b: &[u8]) -> Result<ResponseMessage> {
-    bincode::deserialize(&b).with_context(|| "Can't decode binary ResponseMessage")
+  pub fn from_binary(b: &[u8]) -> Result<Self> {
+    bincode::deserialize(b).with_context(|| "Can't decode binary ResponseMessage")
   }
 
   pub fn to_binary(&self) -> Result<Vec<u8>> {

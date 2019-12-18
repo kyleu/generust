@@ -1,3 +1,3 @@
 # {{project-name}}-client
 
-wasm client for {{project-name}}
+WASM web client sources for {{project-name}}

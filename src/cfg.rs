@@ -3,12 +3,12 @@ use {{crate_name}}_service::AppConfig;
 pub(crate) const DEFAULT_PORT: u16 = 5050;
 
 #[cfg(debug_assertions)]
-fn is_debug() -> bool {
+const fn is_debug() -> bool {
   true
 }
 
 #[cfg(not(debug_assertions))]
-fn is_debug() -> bool {
+const fn is_debug() -> bool {
   false
 }
 
@@ -40,7 +40,7 @@ pub(crate) fn cfg_from_args() -> AppConfig {
     }
     None => ("app", "127.0.0.1", 0)
   };
-  AppConfig::new(task.into(), address.into(), port, cfg_dir, log, verbose)
+  AppConfig::new(task.into(), address.into(), port, &cfg_dir, log, verbose)
 }
 
 #[cfg(not(target_os = "android"))]

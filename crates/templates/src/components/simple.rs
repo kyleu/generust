@@ -2,9 +2,9 @@ use anyhow::Result;
 use maud::{html, Markup};
 use {{crate_name}}_service::{RequestContext, Router};
 
-pub(crate) fn simple(ctx: &RequestContext, router: &dyn Router, title: &str, content: Markup) -> Result<Markup> {
-  Ok(crate::components::page::page(ctx, router, title, html! {
-    (crate::components::navbar::navbar(&ctx, router)?)
+pub(crate) fn simple(ctx: &RequestContext, router: &dyn Router, title: &str, content: &Markup) -> Result<Markup> {
+  Ok(crate::components::page::page(ctx, router, title, &html! {
+    (crate::components::navbar::navbar(ctx, router)?)
 
     div#content data-uk-height-viewport="expand: true" {
       @if let Some(f) = ctx.flash() {
@@ -15,12 +15,12 @@ pub(crate) fn simple(ctx: &RequestContext, router: &dyn Router, title: &str, con
   })?)
 }
 
-pub(crate) fn section(ctx: &RequestContext, router: &dyn Router, title: &str, content: Markup) -> Result<Markup> {
+pub(crate) fn section(ctx: &RequestContext, router: &dyn Router, title: &str, content: &Markup) -> Result<Markup> {
   simple(
     ctx,
     router,
     title,
-    html!(
+    &html!(
       div.uk-container {
         div.uk-section.uk-section-small {
           (content)

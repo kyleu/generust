@@ -19,17 +19,17 @@ impl std::fmt::Debug for ConnectionCache {
     write!(
       f,
       "ConnectionCache [{}] connections, [{}] channels",
-      &self.connections.read().unwrap().len(),
-      &self.channels.read().unwrap().len()
+      &self.connections.read().expect("Cannot lock Connections for read").len(),
+      &self.channels.read().expect("Cannot lock Channels for read").len()
     )
   }
 }
 
 impl ConnectionCache {
-  pub fn new(log: &slog::Logger) -> ConnectionCache {
+  pub fn new(log: &slog::Logger) -> Self {
     let log = log.new(slog::o!("service" => "connection-cache"));
     slog::debug!(log, "Connection cache created");
-    ConnectionCache {
+    Self {
       connections: Arc::new(RwLock::new(HashMap::new())),
       channels: Arc::new(RwLock::new(HashMap::new())),
       log
@@ -37,24 +37,37 @@ impl ConnectionCache {
   }
 
   pub fn conn_list(&self) -> Vec<Uuid> {
-    let mut conns: Vec<Uuid> = self.connections.read().unwrap().keys().copied().collect();
+    let mut conns: Vec<Uuid> = self
+      .connections
+      .read()
+      .expect("Cannot lock Connections for read")
+      .keys()
+      .copied()
+      .collect();
     conns.sort();
     conns
   }
 
   pub fn channel_list(&self) -> Vec<(String, Vec<Uuid>)> {
-    let mut channels: Vec<(String, Vec<Uuid>)> = self.channels.read().unwrap().iter().map(|v| {
-      let mut ids: Vec<Uuid> = v.1.iter().copied().collect();
-      ids.sort();
-      (v.0.clone(), ids)
-    }).collect();
+    let mut channels: Vec<(String, Vec<Uuid>)> = self
+      .channels
+      .read()
+      .expect("Cannot lock Channels for read")
+      .iter()
+      .map(|v| {
+        let mut ids: Vec<Uuid> = v.1.iter().copied().collect();
+        ids.sort();
+        (v.0.clone(), ids)
+      })
+      .collect();
     channels.sort();
     channels
   }
 
   pub fn add<F>(&self, key: &str, id: Uuid, f: Box<dyn SendCallback>) {
-    let _ = self.connections.write().unwrap().insert(id, f);
-    let mut chan = self.channels.write().unwrap();
+    let mut conns = self.connections.write().expect("Cannot lock Connections for write");
+    let _ = conns.insert(id, f);
+    let mut chan = self.channels.write().expect("Cannot lock Channels for write");
     match chan.get_mut(key) {
       Some(current) => {
         slog::debug!(
@@ -75,8 +88,8 @@ impl ConnectionCache {
   }
 
   pub fn remove(&self, key: &str, id: Uuid) {
-    let _ = self.connections.write().unwrap().remove(&id);
-    let mut chan = self.channels.write().unwrap();
+    let _ = self.connections.write().expect("Cannot lock Connections for write").remove(&id);
+    let mut chan = self.channels.write().expect("Cannot lock Channels for write");
     match chan.get_mut(key) {
       Some(current) => {
         if current.contains(&id) {
@@ -108,7 +121,7 @@ impl ConnectionCache {
   }
 
   pub fn send_connection(&self, id: &Uuid, msg: ResponseMessage) {
-    match &mut self.connections.read().unwrap().get(id) {
+    match &mut self.connections.read().expect("Cannot lock Connections for read").get(id) {
       Some(f) => {
         slog::debug!(self.log, "Sending message [{:?}] to connection [{}]", msg, &id);
         f.send_message(msg);
@@ -117,18 +130,18 @@ impl ConnectionCache {
     }
   }
 
-  pub fn send_channel(&self, key: &str, msg: ResponseMessage) {
-    self.send_channel_except(key, vec![], msg)
+  pub fn send_channel(&self, key: &str, msg: &ResponseMessage) {
+    self.send_channel_except(key, &[], msg)
   }
 
-  pub fn send_channel_except(&self, key: &str, exclude: Vec<&Uuid>, msg: ResponseMessage) {
-    match &mut self.channels.read().unwrap().get(key) {
+  pub fn send_channel_except(&self, key: &str, exclude: &[&Uuid], msg: &ResponseMessage) {
+    match &mut self.channels.read().expect("Cannot lock Channels for read").get(key) {
       Some(current) => {
         let size = current.len();
         let filtered: Vec<&Uuid> = current
           .iter()
           .filter(|c| {
-            println!("{:?} / {} == {}", exclude, c, !exclude.contains(c));
+            slog::warn!(self.log, "{:?} / {} == {}", exclude, c, !exclude.contains(c));
             !exclude.contains(c)
           })
           .collect();
@@ -142,10 +155,12 @@ impl ConnectionCache {
         );
         let _: Vec<_> = filtered
           .iter()
-          .map(|id| match self.connections.read().unwrap().get(id) {
-            Some(f) => f.send_message(msg.clone()),
-            None => slog::warn!(self.log, "Unable to send message")
-          })
+          .map(
+            |id| match self.connections.read().expect("Cannot lock Connections for read").get(id) {
+              Some(f) => f.send_message(msg.clone()),
+              None => slog::warn!(self.log, "Unable to send message")
+            }
+          )
           .collect();
       }
       None => ()

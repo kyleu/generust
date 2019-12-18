@@ -18,7 +18,7 @@ impl Frame {
     }
   }
 
-  fn from_backtrace(bt: &Backtrace) -> Vec<Frame> {
+  fn from_backtrace(bt: &Backtrace) -> Vec<Self> {
     let content = format!("{:?}", bt);
 
     let mut curr_id = 0;
@@ -31,20 +31,23 @@ impl Frame {
         let parts = line.split_whitespace().collect::<Vec<&str>>();
         match parts[0] {
           id if id.ends_with(':') => {
-            let n = id.get(..(id.len() - 1)).map(|i| i.parse::<i32>().unwrap()).unwrap();
-            let ret = if n != 0 {
-              let owned = curr_message.starts_with("{{crate_name}}");
-              vec![Frame {
+            let n = id
+              .get(..(id.len() - 1))
+              .map(|i| i.parse::<i32>().expect("Cannot parse i32"))
+              .expect("Cannot find expected key in map");
+            let ret = if n == 0 {
+              vec![]
+            } else {
+              let owned = curr_message.starts_with({{crate_name}}_core::APPNAME);
+              vec![Self {
                 id: curr_id,
                 message: curr_message.clone(),
                 owned,
                 locs: curr_locs.clone()
               }]
-            } else {
-              vec![]
             };
             curr_id = n;
-            curr_message = line[(line.find(':').unwrap() + 2)..].into();
+            curr_message = line[(line.find(':').expect("Cannot find `:` in line") + 2)..].into();
             curr_locs = vec![];
             ret
           }
@@ -54,7 +57,7 @@ impl Frame {
           }
         }
       })
-      .collect::<Vec<Frame>>()
+      .collect::<Vec<Self>>()
   }
 }
 

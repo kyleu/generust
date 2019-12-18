@@ -10,33 +10,34 @@ use web_sys::{Blob, ErrorEvent, FileReader, MessageEvent};
 use {{crate_name}}_core::ResponseMessage;
 
 pub(crate) fn on_open(ctx: &Rc<RwLock<ClientContext>>) -> Result<()> {
-  ctx.read().unwrap().on_open()
+  ctx.read().expect("Cannot lock ClientContext for read").on_open()
 }
 
-pub(crate) fn on_message(ctx: &Rc<RwLock<ClientContext>>, evt: MessageEvent) -> Result<()> {
+pub(crate) fn on_message(ctx: &Rc<RwLock<ClientContext>>, evt: &MessageEvent) -> Result<()> {
   let data = evt.data();
   if data.is_instance_of::<ArrayBuffer>() {
-    on_array_message(ctx, data)
+    on_array_message(ctx, &data)
   } else if data.is_instance_of::<Blob>() {
-    on_blob_message(ctx, data)
+    on_blob_message(ctx, &data)
   } else {
-    on_text_message(ctx, data)
+    on_text_message(ctx, &data)
   }
 }
 
-fn on_array_message(ctx: &Rc<RwLock<ClientContext>>, data: JsValue) -> Result<()> {
+fn on_array_message(ctx: &Rc<RwLock<ClientContext>>, data: &JsValue) -> Result<()> {
   let buf: &ArrayBuffer = data.unchecked_ref();
   handle(ctx, parse_array_buffer(buf)?)
 }
 
-fn on_blob_message(ctx: &Rc<RwLock<ClientContext>>, data: JsValue) -> Result<()> {
+fn on_blob_message(ctx: &Rc<RwLock<ClientContext>>, data: &JsValue) -> Result<()> {
   let fr = Rc::new(Box::new(FileReader::new().expect("!!!")));
   let cb: Box<dyn Fn()> = {
     let cb_fr = Rc::clone(&fr);
-    let cb_ctx = Rc::clone(&ctx);
+    let cb_ctx = Rc::clone(ctx);
     Box::new(move || {
-      let v: ArrayBuffer = cb_fr.result().unwrap().dyn_into::<ArrayBuffer>().unwrap();
-      let rm = parse_array_buffer(&v).unwrap();
+      let x = cb_fr.result().expect("No JSValue?");
+      let v: ArrayBuffer = x.dyn_into::<ArrayBuffer>().expect("Not an ArrayBuffer?");
+      let rm = parse_array_buffer(&v).expect("Invalid message!");
       match handle(&cb_ctx, rm) {
         Ok(_) => {}
         Err(e) => error!("Error processing response message: {:?}", e)
@@ -50,7 +51,7 @@ fn on_blob_message(ctx: &Rc<RwLock<ClientContext>>, data: JsValue) -> Result<()>
   Ok(())
 }
 
-fn on_text_message(ctx: &Rc<RwLock<ClientContext>>, data: JsValue) -> Result<()> {
+fn on_text_message(ctx: &Rc<RwLock<ClientContext>>, data: &JsValue) -> Result<()> {
   match data.as_string() {
     Some(s) => handle(ctx, ResponseMessage::from_json(&s)?),
     None => Err(anyhow::anyhow!(format!("Can't convert received data to a string: {:?}", data)))
@@ -58,15 +59,15 @@ fn on_text_message(ctx: &Rc<RwLock<ClientContext>>, data: JsValue) -> Result<()>
 }
 
 fn handle(ctx: &Rc<RwLock<ClientContext>>, response: ResponseMessage) -> Result<()> {
-  crate::message_handler::MessageHandler::handle(&ctx, response)
+  crate::message_handler::MessageHandler::handle(ctx, response)
 }
 
-pub(crate) fn on_error(ctx: &Rc<RwLock<ClientContext>>, _e: ErrorEvent) -> Result<()> {
-  ctx.read().unwrap().on_error()
+pub(crate) fn on_error(ctx: &Rc<RwLock<ClientContext>>, _e: &ErrorEvent) -> Result<()> {
+  ctx.read().expect("Cannot lock ClientContext for read").on_error()
 }
 
 pub(crate) fn on_close(ctx: &Rc<RwLock<ClientContext>>) -> Result<()> {
-  ctx.read().unwrap().on_close()
+  ctx.read().expect("Cannot lock ClientContext for read").on_close()
 }
 
 fn parse_array_buffer(a: &ArrayBuffer) -> Result<ResponseMessage> {

@@ -8,10 +8,10 @@ pub fn testbed_key(session: Session, cfg: web::Data<AppConfig>, key: web::Path<S
   crate::act(&session, &cfg, req, |ctx, router| {
     let k: &str = &key;
     match k {
-      "dump" => {{crate_name}}_templates::testbed::dump(&ctx, router),
-      "gallery" => {{crate_name}}_templates::testbed::gallery(&ctx, router),
-      "prototype" => {{crate_name}}_templates::testbed::prototype(&ctx, router),
-      "scroll" => {{crate_name}}_templates::testbed::scroll(&ctx, router),
+      "dump" => {{crate_name}}_templates::testbed::dump(ctx, router),
+      "gallery" => {{crate_name}}_templates::testbed::gallery(ctx, router),
+      "prototype" => {{crate_name}}_templates::testbed::prototype(ctx, router),
+      "scroll" => {{crate_name}}_templates::testbed::scroll(ctx, router),
       _ => Err(anyhow::anyhow!("Cannot find testbed matching [{}]", key))
     }
   })

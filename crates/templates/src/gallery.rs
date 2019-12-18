@@ -27,7 +27,7 @@ pub(crate) fn gallery(ctx: &RequestContext) -> Markup {
           div.("uk-width-expand@m") {
             (search())
             (navlist())
-            (cards(&ctx))
+            (cards(ctx))
           }
         }
         hr.uk-margin-large;
@@ -508,7 +508,7 @@ fn navlist() -> Markup {
 
 fn cards(ctx: &RequestContext) -> Markup {
   html! {
-    (crate::card(&ctx, html! {
+    (crate::card(ctx, &html! {
       h3.uk-card-title { "Default" }
       p {
         "Lorem ipsum "
@@ -516,7 +516,7 @@ fn cards(ctx: &RequestContext) -> Markup {
         " sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
       }
     }))
-    (crate::card(&ctx, html! {
+    (crate::card(ctx, &html! {
       h3.uk-card-title { "Primary" }
       p {
         "Lorem ipsum "
@@ -524,7 +524,7 @@ fn cards(ctx: &RequestContext) -> Markup {
         " sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
       }
     }))
-    (crate::card(&ctx, html! {
+    (crate::card(ctx, &html! {
       h3.uk-card-title { "Secondary" }
       p {
         "Lorem ipsum "
@@ -532,7 +532,7 @@ fn cards(ctx: &RequestContext) -> Markup {
         " sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
       }
     }))
-    (crate::card(&ctx, html! {
+    (crate::card(ctx, &html! {
       h3.uk-card-title { "Hover" }
       p {
         "Lorem ipsum "

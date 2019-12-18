@@ -4,7 +4,10 @@ version = "0.0.1"
 authors = ["{{authors}}"]
 edition = "2018"
 description = "Embedded web assets for {{project-name}}"
-homepage = "https://estimate.poker"
+readme = "README.md"
+categories = ["wasm", "web-programming", "web-programming::websocket"]
+keywords = ["static", "assets"]
+homepage = "https://{{project-name}}.com"
 repository = "https://github.com/{{project-name}}/{{project-name}}"
 license = "MIT"
 

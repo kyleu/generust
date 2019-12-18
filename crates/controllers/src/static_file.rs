@@ -17,7 +17,7 @@ pub fn favicon() -> HttpResponse {
 }
 
 fn get(name: &str) -> HttpResponse {
-  match Asset::get(&name) {
+  match Asset::get(name) {
     Some(content) => {
       let body: Body = match content {
         Cow::Borrowed(bytes) => bytes.into(),

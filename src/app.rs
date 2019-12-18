@@ -5,8 +5,8 @@ pub(crate) fn start(cfg: {{crate_name}}_service::AppConfig) -> anyhow::Result<()
   let (port_tx, port_rx) = std::sync::mpsc::channel();
   match cfg.task().as_ref() {
     "app" => {
-      let _ = std::thread::spawn(move || start_server(cfg, port_tx));
-      let port = port_rx.recv().unwrap();
+      let _ = std::thread::spawn(move || start_server(&cfg, &port_tx));
+      let port = port_rx.recv().expect("Cannot read port from newly-started server");
       web_view::builder()
         .title({{crate_name}}_core::APPNAME)
         .content(web_view::Content::Url(format!("http://127.0.0.1:{}", port)))
@@ -17,7 +17,7 @@ pub(crate) fn start(cfg: {{crate_name}}_service::AppConfig) -> anyhow::Result<()
         .run()
         .map_err(|e| anyhow::anyhow!("Error creating webview: {:?}", e))
     }
-    _ => start_server(cfg, port_tx)
+    _ => start_server(&cfg, &port_tx)
   }
 }
 

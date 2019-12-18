@@ -9,7 +9,7 @@ Release: @@RELEASE@@
 License: MIT
 Group: Applications/System
 Source0: %{name}-%{version}.tar.gz
-URL: https://estimate.poker
+URL: https://{{project-name}}.com
 
 BuildRoot: %{_tmppath}/%{name}-%{version}-%{release}-root
 

@@ -6,7 +6,11 @@ pub(crate) fn root_logger(verbose: bool) -> slog::Logger {
   let level = if verbose { slog::Level::Debug } else { slog::Level::Info };
 
   let both = if std::path::Path::new("log").exists() {
-    match std::fs::OpenOptions::new().create(true).append(true).open("log/{{project-name}}.log") {
+    match std::fs::OpenOptions::new()
+      .create(true)
+      .append(true)
+      .open("log/{{project-name}}.log")
+    {
       Ok(file) => {
         let json = slog_json::Json::default(file).fuse();
         let fused = std::sync::Mutex::new(slog::Duplicate::new(drain, json)).fuse();

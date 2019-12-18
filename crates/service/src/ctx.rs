@@ -12,7 +12,7 @@ pub trait Router {
     self.route(path, &NO_PARAMS)
   }
   fn route_static(&self, path: &str) -> Result<String> {
-    self.route("static", &[&path])
+    self.route("static", &[path])
   }
 }
 
@@ -27,20 +27,14 @@ pub struct RequestContext {
 
 impl std::fmt::Debug for RequestContext {
   fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-    write!(f, "RequestContext [{}] [{:?}]", self.user_id, self.user_profile)
+    write!(f, "RequestContext [{}] [{}]", self.user_id, self.user_profile)
   }
 }
 
 impl RequestContext {
-  pub fn new(
-    app: AppConfig,
-    user_id: Uuid,
-    user_profile: UserProfile,
-    log: slog::Logger,
-    flash: Option<(String, String)>
-  ) -> RequestContext {
+  pub fn new(app: AppConfig, user_id: Uuid, user_profile: UserProfile, log: slog::Logger, flash: Option<(String, String)>) -> Self {
     let log = log.new(slog::o!("user_id" => user_id.to_string()));
-    RequestContext {
+    Self {
       app,
       user_id,
       user_profile,
@@ -49,19 +43,19 @@ impl RequestContext {
     }
   }
 
-  pub fn app(&self) -> &AppConfig {
+  pub const fn app(&self) -> &AppConfig {
     &self.app
   }
 
-  pub fn user_id(&self) -> &Uuid {
+  pub const fn user_id(&self) -> &Uuid {
     &self.user_id
   }
 
-  pub fn user_profile(&self) -> &UserProfile {
+  pub const fn user_profile(&self) -> &UserProfile {
     &self.user_profile
   }
 
-  pub fn flash(&self) -> &Option<(String, String)> {
+  pub const fn flash(&self) -> &Option<(String, String)> {
     &self.flash
   }
 

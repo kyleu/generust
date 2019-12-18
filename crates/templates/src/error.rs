@@ -13,7 +13,7 @@ pub fn not_found(ctx: &RequestContext, router: &dyn Router, path: &str) -> Resul
       }
     }
   };
-  crate::section(ctx, router, "Not Found", content)
+  crate::section(ctx, router, "Not Found", &content)
 }
 
 pub fn exception(ctx: &RequestContext, router: &dyn Router, e: &anyhow::Error) -> Result<Markup> {
@@ -34,5 +34,5 @@ pub fn exception(ctx: &RequestContext, router: &dyn Router, e: &anyhow::Error) -
       }
     }
   };
-  crate::section(ctx, router, "Error", content)
+  crate::section(ctx, router, "Error", &content)
 }

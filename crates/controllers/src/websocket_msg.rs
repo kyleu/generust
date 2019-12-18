@@ -10,7 +10,7 @@ pub struct SendResponseMessage {
 }
 
 impl SendResponseMessage {
-  pub(crate) fn msg(&self) -> &ResponseMessage {
+  pub(crate) const fn msg(&self) -> &ResponseMessage {
     &self.msg
   }
 }
@@ -26,6 +26,6 @@ pub(crate) struct ServerSender {
 
 impl {{crate_name}}_service::conn::SendCallback for ServerSender {
   fn send_message(&self, msg: ResponseMessage) {
-    self.addr.do_send(SendResponseMessage { msg: msg });
+    self.addr.do_send(SendResponseMessage { msg });
   }
 }

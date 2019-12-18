@@ -22,6 +22,10 @@ extern "C" {
 
   #[allow(unsafe_code)]
   #[wasm_bindgen(js_namespace = {{crate_name}})]
+  pub(crate) fn wire_onbeforeunload(socket: &web_sys::WebSocket);
+
+  #[allow(unsafe_code)]
+  #[wasm_bindgen(js_namespace = {{crate_name}})]
   pub(crate) fn wire_textarea(id: &str);
 }
 #[wasm_bindgen]
@@ -47,12 +51,12 @@ impl JsClient {
       Err(e) => panic!("Cannot construct ClientContext: {}", e)
     };
 
-    JsClient { ctx }
+    Self { ctx }
   }
 
   #[allow(unused_qualifications)]
   pub fn on_event(&self, t: &str, k: &str, v: &str) {
-    let mut ctx = self.ctx.write().unwrap();
+    let mut ctx = self.ctx.write().expect("Cannot lock ClientContext for write");
     match ctx.on_event(t, k, v) {
       Ok(_) => {}
       Err(e) => error!("Error encountered running [on_event]: {}", e)

@@ -10,8 +10,8 @@ pub struct FileService {
 }
 
 impl FileService {
-  pub(crate) fn new(cfg_dir: &str, logger: &slog::Logger) -> FileService {
-    let ret = FileService {
+  pub(crate) fn new(cfg_dir: &str, logger: &slog::Logger) -> Self {
+    let ret = Self {
       cfg_dir: cfg_dir.into(),
       log: logger.new(slog::o!("service" => "file"))
     };
@@ -22,7 +22,7 @@ impl FileService {
     ret
   }
 
-  pub fn cfg_dir(&self) -> &String {
+  pub const fn cfg_dir(&self) -> &String {
     &self.cfg_dir
   }
 
@@ -75,7 +75,7 @@ impl FileService {
       )
     })?;
     file
-      .write_all(&content.as_bytes())
+      .write_all(content.as_bytes())
       .with_context(|| format!("Can't write to file [{}]", clean_path(path)))?;
     Ok(())
   }

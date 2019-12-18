@@ -16,7 +16,7 @@ macro_rules! error {
   ($($t:tt)*) => (crate::js::log(&format_args!($($t)*).to_string().replacen("", "%c [error] ", 1), "color: #d62828;"))
 }
 
-pub(crate) fn notify(level: NotificationLevel, content: &str) -> anyhow::Result<()> {
+pub(crate) fn notify(level: &NotificationLevel, content: &str) -> anyhow::Result<()> {
   let level = match level {
     NotificationLevel::Info => "primary",
     NotificationLevel::Success => "success",

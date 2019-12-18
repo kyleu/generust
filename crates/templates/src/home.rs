@@ -13,11 +13,11 @@ pub fn index(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
     (testbed_list(ctx, router)?)
     script src=(router.route_static("client.js")?) defer? {}
   };
-  crate::section(ctx, router, "Home", content)
+  crate::section(ctx, router, "Home", &content)
 }
 
 fn socket(ctx: &RequestContext) -> Result<Markup> {
-  Ok(crate::card(&ctx, html! {
+  Ok(crate::card(ctx, &html! {
     h4 { "WebSocket" }
     div {
       a href="" onclick=(crate::utils::onclick_event("send-ping", "", "")) { "Send Ping" }
@@ -35,7 +35,7 @@ fn testbed_list(ctx: &RequestContext, router: &dyn Router) -> Result<Markup> {
     ("scroll", "Scroll", "Scrolling test"),
     ("crash", "Crash", "Simulates a server error"),
   ];
-  Ok(crate::card(&ctx, html! {
+  Ok(crate::card(ctx, &html! {
     h4 { "Testbeds" }
     table.uk-table.uk-table-divider {
       tbody {

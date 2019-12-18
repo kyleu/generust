@@ -7,7 +7,7 @@ use anyhow::Result;
 use futures::future::Future;
 use std::time::SystemTime;
 
-pub(crate) fn start_server(cfg: AppConfig, port_tx: std::sync::mpsc::Sender<u16>) -> Result<()> {
+pub(crate) fn start_server(cfg: &AppConfig, port_tx: &std::sync::mpsc::Sender<u16>) -> Result<()> {
   let server = {
     let cfg = cfg.clone();
     HttpServer::new(move || {
@@ -23,10 +23,11 @@ pub(crate) fn start_server(cfg: AppConfig, port_tx: std::sync::mpsc::Sender<u16>
         .wrap_fn(|req, srv| {
           let p = req.path().to_owned();
           let start_time = SystemTime::now();
-          let cfg: AppConfig = match req.app_data::<AppConfig>() {
-            Some(ad) => ad.get_ref().to_owned(),
-            None => panic!("Missing AppConfig data reference!")
-          };
+          let cfg: AppConfig = req
+            .app_data::<AppConfig>()
+            .expect("Missing AppConfig data reference!")
+            .get_ref()
+            .to_owned();
           let useful = !p.starts_with("/static");
           if useful {
             slog::trace!(cfg.root_logger(), "Request received for path [{}]", p);
@@ -56,7 +57,11 @@ pub(crate) fn start_server(cfg: AppConfig, port_tx: std::sync::mpsc::Sender<u16>
     Ok(s) => {
       let port = s.addrs()[0].port();
       let _ = port_tx.send(port);
-      let msg = format!("[{{project-name}}] started, open http://{}:{} to get going!", cfg.address(), port);
+      let msg = format!(
+        "[{{project-name}}] started, open http://{}:{} to get going!",
+        cfg.address(),
+        port
+      );
       slog::info!(cfg.root_logger(), "{}", msg);
       s.run().map_err(|e| anyhow::anyhow!("Error creating web server: {:?}", e))
     }

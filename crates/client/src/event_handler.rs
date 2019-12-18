@@ -8,7 +8,7 @@ pub(crate) struct EventHandler {}
 impl EventHandler {
   pub(crate) fn handle(ctx: &ClientContext, t: &str, k: &str, v: &str) -> Result<()> {
     match t {
-      "send-ping" => ctx.send(RequestMessage::Ping {
+      "send-ping" => ctx.send(&RequestMessage::Ping {
         v: js_sys::Date::now() as i64
       }),
       _ => {

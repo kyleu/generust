@@ -16,8 +16,8 @@ pub struct AppConfig {
 }
 
 impl AppConfig {
-  pub fn new(task: String, address: String, port: u16, cfg_dir: String, root_logger: slog::Logger, verbose: bool) -> AppConfig {
-    let files = Arc::new(FileService::new(&cfg_dir, &root_logger));
+  pub fn new(task: String, address: String, port: u16, cfg_dir: &str, root_logger: slog::Logger, verbose: bool) -> Self {
+    let files = Arc::new(FileService::new(cfg_dir, &root_logger));
     AppConfig {
       task,
       address,
@@ -29,15 +29,15 @@ impl AppConfig {
     }
   }
 
-  pub fn task(&self) -> &String {
+  pub const fn task(&self) -> &String {
     &self.task
   }
 
-  pub fn address(&self) -> &String {
+  pub const fn address(&self) -> &String {
     &self.address
   }
 
-  pub fn port(&self) -> u16 {
+  pub const fn port(&self) -> u16 {
     self.port
   }
 
@@ -53,7 +53,7 @@ impl AppConfig {
     &self.root_logger
   }
 
-  pub fn verbose(&self) -> bool {
+  pub const fn verbose(&self) -> bool {
     self.verbose
   }
 }

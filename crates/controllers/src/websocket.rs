@@ -18,7 +18,7 @@ pub(crate) struct ServerSocket {
 }
 
 impl ServerSocket {
-  fn handler(&self) -> &MessageHandler {
+  const fn handler(&self) -> &MessageHandler {
     &self.handler
   }
 
@@ -34,14 +34,14 @@ impl ServerSocket {
   }
 
   fn handle_error(&self, e: &anyhow::Error, wsc: &mut WebsocketContext<Self>) {
-    slog::warn!(&self.handler().log(), "Error handling message: {}", e);
+    slog::warn!(self.handler().log(), "Error handling message: {}", e);
     let msg = ResponseMessage::ServerError {
       reason: format!("{}", e),
       content: "Error handling message".into()
     };
     match self.send_ws(&msg, wsc) {
       Ok(_) => (),
-      Err(e) => slog::warn!(&self.handler().log(), "Error sending server error message: {}", e)
+      Err(e) => slog::warn!(self.handler().log(), "Error sending server error message: {}", e)
     }
   }
 
@@ -64,22 +64,17 @@ impl Actor for ServerSocket {
       let connections = self.handler.ctx().app().connections();
       connections.add::<ServerSender>(self.handler.channel_id(), *self.handler().connection_id(), sender);
     }
-    let msgs = match self.handler.on_open() {
-      Ok(m) => m,
-      Err(e) => {
-        slog::error!(self.handler.log(), "Unable to process on_open: {}", e);
-        vec![]
-      }
+    match self.handler.on_open() {
+      Ok(_) => (),
+      Err(e) => slog::error!(self.handler.log(), "Unable to process on_open: {}", e)
     };
-    for msg in msgs {
-      match self.send_ws(&msg, wsc) {
-        Ok(_) => (),
-        Err(e) => slog::warn!(self.handler.log(), "Unable to send initial open messages: {}", e)
-      }
-    }
   }
 
   fn stopping(&mut self, _ctx: &mut Self::Context) -> actix::Running {
+    match self.handler.on_closed() {
+      Ok(_) => (),
+      Err(e) => slog::error!(self.handler.log(), "Unable to process on_closed: {}", e)
+    };
     let connections = self.handler.ctx().app().connections();
     connections.remove(self.handler.channel_id(), *self.handler().connection_id());
     actix::Running::Stop
@@ -103,7 +98,7 @@ impl StreamHandler<Message, ProtocolError> for ServerSocket {
       Message::Ping(msg) => wsc.pong(&msg),
       Message::Text(text) => match &self.handle_text(text, wsc) {
         Ok(_) => (),
-        Err(e) => self.handle_error(&e, wsc)
+        Err(e) => self.handle_error(e, wsc)
       },
       Message::Binary(bin) => match self.handle_binary(bin, wsc) {
         Ok(_) => (),
