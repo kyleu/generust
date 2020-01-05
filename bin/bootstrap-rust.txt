@@ -12,6 +12,7 @@ cargo install cargo-cache
 cargo install cargo-check
 cargo install cargo-count
 cargo install cargo-deps
+cargo install cargo-expand
 cargo install cargo-generate
 cargo install cargo-lipo
 cargo install cargo-modules

@@ -92,26 +92,31 @@ impl actix::Handler<SendResponseMessage> for ServerSocket {
   }
 }
 
-impl StreamHandler<Message, ProtocolError> for ServerSocket {
-  fn handle(&mut self, msg: Message, wsc: &mut Self::Context) {
-    match msg {
-      Message::Ping(msg) => wsc.pong(&msg),
-      Message::Text(text) => match &self.handle_text(text, wsc) {
-        Ok(_) => (),
-        Err(e) => self.handle_error(e, wsc)
-      },
-      Message::Binary(bin) => match self.handle_binary(bin, wsc) {
-        Ok(_) => (),
-        Err(e) => self.handle_error(&e, wsc)
-      },
-      _ => ()
+impl StreamHandler<Result<Message, ProtocolError>> for ServerSocket {
+  fn handle(&mut self, r: Result<Message, ProtocolError>, wsc: &mut Self::Context) {
+    match r {
+      Ok(msg) => match msg {
+        Message::Ping(msg) => wsc.pong(&msg),
+        Message::Text(text) => match &self.handle_text(text, wsc) {
+          Ok(_) => (),
+          Err(e) => self.handle_error(&e, wsc)
+        },
+        Message::Binary(bin) => match self.handle_binary(bin, wsc) {
+          Ok(_) => (),
+          Err(e) => self.handle_error(&e, wsc)
+        },
+        _ => ()
+      }
+      Err(e) => slog::warn!(self.handler().log(), "Protocol error: {:?}", e)
     }
   }
 }
 
+
 /// Available at `/s/{key}/connect` (WebSocket handler)`
-pub fn connect(
-  session: Session, cfg: web::Data<AppConfig>, key: web::Path<String>, req: HttpRequest, stream: web::Payload
+pub async fn connect(
+  req: HttpRequest, stream: web::Payload,
+  session: Session, cfg: web::Data<AppConfig>, key: web::Path<String>
 ) -> std::result::Result<HttpResponse, Error> {
   let ctx = crate::req_context(&session, &cfg, "connect");
   let binary = match req.query_string() {

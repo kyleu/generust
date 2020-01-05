@@ -94,33 +94,27 @@ mod server;
 pub mod tests;
 
 /// Application entrypoint, creates and starts the server
-pub fn go() -> anyhow::Result<()> {
+#[actix_rt::main]
+pub async fn go() -> anyhow::Result<()> {
   let cfg = crate::cfg::cfg_from_args();
-  crate::app::start(cfg)
+  crate::app::start(cfg).await
 }
 
 /// Async application entrypoint, creates and starts the server, returning the port
-pub fn go_async() -> u16 {
+pub async fn go_async() -> u16 {
   let (port_tx, port_rx) = std::sync::mpsc::channel();
   let cfg = crate::cfg::cfg_from_args();
 
-  let _ = std::thread::spawn(move || {
-    match crate::server::start_server(&cfg, &port_tx) {
-      Ok(_) => println!("Successfully started [{}]", {{crate_name}}_core::APPNAME),
-      Err(e) => println!("Error starting [{}]: {}", {{crate_name}}_core::APPNAME, e)
-    };
-  });
+  let _ = crate::server::start_server(cfg, port_tx).await;
 
-  port_rx.recv().expect("No port available!")
+  port_rx.recv().expect("Cannot read port number")
 }
 
 /// External app entrypoint, calls `go()` directly and swallows errors
 #[no_mangle]
-pub extern "C" fn libgo() {
-  match go() {
-    Ok(_) => println!("Successfully started [{}]", {{crate_name}}_core::APPNAME),
-    Err(e) => println!("Error starting [{}]: {}", {{crate_name}}_core::APPNAME, e)
-  };
+#[allow(clippy::cast_lossless)]
+pub extern "C" fn libgo() -> i32 {
+  futures::executor::block_on(go_async()) as i32
 }
 
 /// Android function

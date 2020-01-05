@@ -16,7 +16,7 @@ build = "build.rs"
 built = "0.3.2"
 
 [dependencies]
-anyhow = "1.0.25"
+anyhow = "1.0.26"
 bincode = "1.2.1"
 derive_more = "0.99.2"
 serde = { version = "1.0.104", features = ["derive"] }
