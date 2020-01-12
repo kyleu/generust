@@ -22,7 +22,7 @@ cd dist
 
 for file in *.wasm; do
   echo "Current hashcode: ${file%.module.wasm}"
-  sed -i "" "s/${file%.module.wasm}/{{project-name}}/g" bootstrap.js
+  sed -i "s/${file%.module.wasm}/{{project-name}}/g" bootstrap.js
 
   mv "$file" "{{project-name}}.module.wasm"
 done
