@@ -24,5 +24,5 @@ pub(crate) async fn start(cfg: {{crate_name}}_service::AppConfig) -> anyhow::Res
 #[cfg(not(any(target_os = "macos", target_os = "windows")))]
 pub(crate) async fn start(cfg: {{crate_name}}_service::AppConfig) -> anyhow::Result<()> {
   let (port_tx, _) = std::sync::mpsc::channel();
-  start_server(&cfg, port_tx)
+  start_server(cfg, port_tx).await
 }
